@@ -44,7 +44,8 @@ export async function likeFeedback(id: number) {
         .set({ likes: feedback.likes + 1 })
         .where(eq(feedbacks.id, id));
 
-    revalidatePath("/feedback");
+    // 좋아요는 클라이언트 상태로 관리되므로 revalidatePath 호출하지 않음
+    // 페이지 새로고침 없이 스크롤 위치 유지
     return { success: true };
   } catch (error) {
     console.error("Failed to like feedback:", error);

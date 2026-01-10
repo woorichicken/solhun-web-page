@@ -14,7 +14,8 @@ export default function FooterSection() {
             <div className="text-center text-[#49423D] text-xl font-semibold leading-4 font-sans">solhun</div>
           </div>
           <div className="text-[rgba(73,66,61,0.90)] text-sm font-medium leading-[18px] font-sans">
-            Coding made effortless
+            Your CLI Agents,<br />
+            All in One Place
           </div>
 
           {/* Contact Links */}

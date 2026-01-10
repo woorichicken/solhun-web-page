@@ -2,6 +2,12 @@
 
 import { useState } from "react"
 
+// R2 다운로드 URL
+const DOWNLOAD_URLS = {
+  arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.3.0-arm64.dmg",
+  x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.3.0-x64.dmg",
+}
+
 // 프로덕션 Variant IDs
 const PLANS = {
   monthly: { id: "1145300", price: 4.99, period: "month" },
@@ -14,6 +20,8 @@ type PlanKey = keyof typeof PLANS
 export default function PricingSection() {
   // 로딩 상태 관리 (각 플랜별)
   const [loadingPlan, setLoadingPlan] = useState<PlanKey | null>(null)
+  // Free Tier 다운로드 드롭다운 상태
+  const [isDownloadOpen, setIsDownloadOpen] = useState(false)
 
   /**
    * 체크아웃 버튼 클릭 핸들러
@@ -249,8 +257,61 @@ export default function PricingSection() {
         <div className="text-[rgba(55,50,47,0.60)] text-sm font-normal font-sans">
           Looking for a free option?
         </div>
-        <div className="text-[#37322F] text-base font-medium font-sans border-b border-[rgba(55,50,47,0.2)] pb-0.5 cursor-pointer hover:border-[rgba(55,50,47,0.6)] transition-colors">
-          Get started with our Free Tier
+        <div className="relative">
+          <button
+            onClick={() => setIsDownloadOpen(!isDownloadOpen)}
+            className="flex items-center gap-1.5 text-[#37322F] text-base font-medium font-sans border-b border-[rgba(55,50,47,0.2)] pb-0.5 cursor-pointer hover:border-[rgba(55,50,47,0.6)] transition-colors"
+          >
+            <span>Get started with our Free Tier</span>
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className={`transition-transform duration-200 ${isDownloadOpen ? 'rotate-180' : ''}`}
+            >
+              <path d="m6 9 6 6 6-6" />
+            </svg>
+          </button>
+
+          {/* Download Dropdown Menu */}
+          {isDownloadOpen && (
+            <>
+              <div
+                className="fixed inset-0 z-40"
+                onClick={() => setIsDownloadOpen(false)}
+              />
+              <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-[rgba(55,50,47,0.12)] overflow-hidden z-50 py-1">
+                <a
+                  href={DOWNLOAD_URLS.arm64}
+                  download
+                  onClick={() => setTimeout(() => setIsDownloadOpen(false), 100)}
+                  className="block w-full text-left px-4 py-2.5 text-sm text-[#2F3037] hover:bg-[rgba(55,50,47,0.05)] transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <span>macOS (Apple Silicon)</span>
+                    <span className="text-[10px] text-gray-400">ARM64</span>
+                  </div>
+                </a>
+                <div className="h-[1px] bg-[rgba(55,50,47,0.08)] mx-2"></div>
+                <a
+                  href={DOWNLOAD_URLS.x64}
+                  download
+                  onClick={() => setTimeout(() => setIsDownloadOpen(false), 100)}
+                  className="block w-full text-left px-4 py-2.5 text-sm text-[#2F3037] hover:bg-[rgba(55,50,47,0.05)] transition-colors"
+                >
+                  <div className="flex items-center justify-between">
+                    <span>macOS (Intel)</span>
+                    <span className="text-[10px] text-gray-400">x64</span>
+                  </div>
+                </a>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

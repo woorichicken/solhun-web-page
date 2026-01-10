@@ -213,8 +213,25 @@ function FeedbackItem({ item }: { item: Feedback }) {
   const [cmtAnonymous, setCmtAnonymous] = useState(true);
   const [isSubmittingCmt, setIsSubmittingCmt] = useState(false);
 
+  // 좋아요 수를 클라이언트 상태로 관리 (스크롤 위치 유지를 위해)
+  const [likes, setLikes] = useState(item.likes);
+  const [isLiking, setIsLiking] = useState(false);
+
   async function handleLike() {
-    await likeFeedback(item.id);
+    if (isLiking) return;
+
+    // 낙관적 업데이트: 즉시 UI 반영
+    setIsLiking(true);
+    setLikes((prev) => prev + 1);
+
+    try {
+      await likeFeedback(item.id);
+    } catch {
+      // 실패 시 롤백
+      setLikes((prev) => prev - 1);
+    } finally {
+      setIsLiking(false);
+    }
   }
 
   async function handleCommentSubmit(e: React.FormEvent) {
@@ -271,10 +288,11 @@ function FeedbackItem({ item }: { item: Feedback }) {
       <div className="flex items-center gap-6 border-t border-[rgba(55,50,47,0.08)] pt-4">
         <button
           onClick={handleLike}
-          className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-red-500 transition-colors group"
+          disabled={isLiking}
+          className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-red-500 transition-colors group disabled:opacity-50"
         >
-          <Heart size={18} className={item.likes > 0 ? "fill-red-500 text-red-500" : "group-hover:text-red-500"} />
-          <span>{item.likes}</span>
+          <Heart size={18} className={likes > 0 ? "fill-red-500 text-red-500" : "group-hover:text-red-500"} />
+          <span>{likes}</span>
         </button>
         <button
           onClick={() => setIsCommenting(!isCommenting)}

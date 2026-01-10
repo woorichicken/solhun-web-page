@@ -17,6 +17,7 @@ const NAV_MENUS = {
       { href: "/docs", label: "Docs" },
       { href: "/gallery", label: "Gallery" },
       { href: "/changelog", label: "Changelog" },
+      { href: "/pricing", label: "Pricing" },
     ],
   },
   community: {

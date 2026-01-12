@@ -5,8 +5,8 @@ import Link from "next/link"
 
 // R2 다운로드 URL
 const DOWNLOAD_URLS = {
-  arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.3.2-arm64.dmg",
-  x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.3.2-x64.dmg",
+  arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.3.3-arm64.dmg",
+  x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.3.3-x64.dmg",
 }
 
 // 네비게이션 메뉴 데이터

@@ -2,21 +2,17 @@ import { db, changelogs } from "../lib/db";
 
 async function main() {
   const result = await db.insert(changelogs).values({
-    version: "v1.3.1",
-    date: "Jan 11, 2025",
-    title: "Terminal PATH Fix",
-    description: "Fixed command not found errors when launching from Finder/Spotlight",
+    version: "v1.3.3",
+    date: "Jan 12, 2026",
+    title: "Bug Fix",
+    description: "Terminal scroll fix",
     improvements: [],
-    fixes: [
-      { text: "Fixed \"command not found\" errors for brew, claude, direnv, etc. when launching app from Finder/Spotlight" },
-      { text: "Terminal now starts as login shell (--login) on macOS/Linux to properly load .zprofile/.bash_profile" }
-    ],
+    fixes: [{ text: "Fixed terminal scroll synchronization issue" }],
     patches: [],
     isFeatured: false,
-    youtubeUrl: null,
   }).returning();
   
-  console.log("Created changelog:", result);
+  console.log("Created:", result);
   process.exit(0);
 }
 

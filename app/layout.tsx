@@ -21,6 +21,10 @@ const instrumentSerif = Instrument_Serif({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://solhun.com"),
+  icons: {
+    icon: "/solhun-logo.png",
+    apple: "/solhun-logo.png",
+  },
   title: {
     default: "CLI Manager - Manage Claude Code, Codex CLI & Gemini CLI in One Place",
     template: "%s | CLI Manager"

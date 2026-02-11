@@ -15,8 +15,8 @@ import TestimonialsSection from "../components/testimonials-section"
 
 // 다운로드 URL
 const DOWNLOAD_URLS = {
-  arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.3.3-arm64.dmg",
-  x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.3.3-x64.dmg",
+  arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.4.3-arm64.dmg",
+  x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.4.3-x64.dmg",
 }
 
 // JSON-LD structured data for SEO

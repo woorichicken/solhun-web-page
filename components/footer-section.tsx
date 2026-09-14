@@ -92,6 +92,12 @@ export default function FooterSection() {
               <Link href="/compare/cli-agents" className="self-stretch text-[#49423D] text-sm font-normal leading-5 font-sans cursor-pointer hover:text-[#37322F] transition-colors">
                 vs CLI Agents
               </Link>
+              <Link href="/privacy" className="self-stretch text-[#49423D] text-sm font-normal leading-5 font-sans cursor-pointer hover:text-[#37322F] transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms" className="self-stretch text-[#49423D] text-sm font-normal leading-5 font-sans cursor-pointer hover:text-[#37322F] transition-colors">
+                Terms of Service
+              </Link>
             </div>
           </div>
         </div>

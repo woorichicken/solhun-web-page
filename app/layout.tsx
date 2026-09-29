@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter, Instrument_Serif } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { GoogleAnalytics } from "@/components/google-analytics"
+import { SITE_URL } from "@/lib/site"
 import "./globals.css"
 
 const inter = Inter({
@@ -21,7 +22,7 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.solhun.com"),
+  metadataBase: new URL(SITE_URL),
   icons: {
     icon: "/solhun-logo.png",
     apple: "/solhun-logo.png",

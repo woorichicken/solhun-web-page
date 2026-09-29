@@ -11,6 +11,7 @@ import Script from "next/script"
 import { ProductHuntSticker } from "../components/product-hunt-sticker"
 import FAQSection, { faqData } from "../components/faq-section"
 import TestimonialsSection from "../components/testimonials-section"
+import { RECENT_RELEASES } from "../lib/recent-releases"
 
 // 다운로드 URL
 const DOWNLOAD_URLS = {
@@ -37,6 +38,9 @@ const jsonLd = {
     "Rename CLI agents to define their roles",
     "Switch between VS Code, Cursor, and other editors instantly",
     "Organize all projects in one workspace",
+    "AI Control API: let an AI drive terminal sessions you can watch and take over",
+    "Session status from official Claude Code and Codex hooks, with usage-limit meters",
+    "Loop Dashboard for Claude Code /loop sessions",
   ],
   aggregateRating: {
     "@type": "AggregateRating",
@@ -353,6 +357,45 @@ export default function LandingPage() {
 
           </div>
         </div>
+
+        {/* Recently Shipped — 최근 릴리즈 요약 (데이터: lib/recent-releases.ts) */}
+        <section
+          aria-labelledby="recently-shipped-heading"
+          className="w-full border-b border-[rgba(55,50,47,0.12)] px-4 sm:px-6 md:px-12 py-12 sm:py-16 flex flex-col items-center gap-8"
+        >
+          <div className="flex flex-col items-center gap-3 text-center">
+            <h2
+              id="recently-shipped-heading"
+              className="text-[#49423D] text-2xl sm:text-3xl md:text-4xl font-semibold leading-tight font-sans tracking-tight"
+            >
+              Recently shipped
+            </h2>
+            <p className="text-[#605A57] text-sm sm:text-base font-normal leading-6 font-sans">
+              What changed in the last few releases. Every detail lives in the changelog.
+            </p>
+          </div>
+          <ol className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4">
+            {RECENT_RELEASES.map((release) => (
+              <li
+                key={release.version}
+                className="bg-white rounded-lg border border-[rgba(55,50,47,0.12)] p-5 flex flex-col gap-2"
+              >
+                <div className="flex items-center gap-2 text-xs font-medium font-sans text-[#605A57]">
+                  <span className="px-2 py-0.5 rounded-full bg-[#F5F5F4] text-[#37322F]">{release.version}</span>
+                  <span>{release.date}</span>
+                </div>
+                <h3 className="text-[#37322F] text-lg font-semibold font-sans leading-snug">{release.title}</h3>
+                <p className="text-[#605A57] text-sm leading-6 font-sans">{release.summary}</p>
+              </li>
+            ))}
+          </ol>
+          <Link
+            href="/changelog"
+            className="text-[#37322F] hover:text-[#605A57] transition-colors text-sm font-medium underline"
+          >
+            Full changelog →
+          </Link>
+        </section>
 
         {/* Testimonials Section */}
         <TestimonialsSection />

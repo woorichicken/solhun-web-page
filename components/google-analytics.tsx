@@ -3,13 +3,14 @@
 import Script from "next/script"
 import { usePathname, useSearchParams } from "next/navigation"
 import { Suspense, useEffect, useState } from "react"
+import { PROD_HOSTS } from "@/lib/site"
 
 // GA4 측정 ID. 측정 ID는 페이지 소스에 노출되는 공개값이라 코드에 기본값으로 둔다.
 // (Vercel 환경변수 NEXT_PUBLIC_GA_ID 로 덮어쓸 수 있음)
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || "G-PZQ8TN5S0Y"
 
 // 실제 프로덕션 도메인에서만 추적한다 → localhost/프리뷰(vercel.app) 트래픽이 GA에 섞이지 않는다.
-const PROD_HOSTS = ["www.solhun.com", "solhun.com"]
+// 도메인 목록은 lib/site.ts 에서 관리한다(도메인 이전 기간엔 옛 주소·새 주소 모두 포함).
 
 declare global {
   interface Window {

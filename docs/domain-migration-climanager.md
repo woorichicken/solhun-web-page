@@ -23,7 +23,8 @@
 | 새 주소 응답 | ✅ 200, 현재 프로덕션과 같은 화면. canonical 은 아직 `https://www.solhun.com` → 중복 색인 없음 | `curl` |
 | `solhun.com`, `www.solhun.com` | 아직 solhun-web-page 에 연결(떼지 않음). apex → www **307** | `vercel domains inspect solhun.com` |
 | 코드의 호스트 | `NEXT_PUBLIC_SITE_URL` 하나로 바뀜(기본 `https://www.solhun.com`) | `lib/site.ts` |
-| 이 저장소의 301 | 코드에 있음, **기본 꺼짐** — 과도기 전용, 아래 선행 변경 B 필요 | `next.config.mjs` |
+| 이 저장소의 301 | 코드에 있음, **기본 꺼짐** — 과도기 전용, CLI Manager 경로만(선행 변경 B 적용) | `next.config.mjs` |
+| 프록시용 에셋 절대주소 | 코드에 있음, **기본 꺼짐** — `ASSET_PREFIX`(선행 변경 A 적용) | `next.config.mjs` |
 | solhun.com 등록 만료 | ⚠️ **2026-12-01** (Vercel 등록, 네임서버 Cloudflare) | 같은 명령 |
 
 Vercel 이 권장하는 명시 레코드(와일드카드를 지울 경우 대비 — 지금은 없어도 동작):
@@ -51,30 +52,39 @@ solhun-web-page 의 라우트 전수(`app/**/page.tsx`, `route.ts`, 메타데이
 | 프록시 페이지가 쓰는 정적 파일(`/solhun-logo.png` 등) | fallback rewrite 프록시 | Portfolio 에 같은 이름 파일이 없을 때만 CLI Manager 쪽에서 가져온다 |
 | `/robots.txt`, `/sitemap.xml`, `/llms.txt` | **Portfolio 자체 것** | 도메인 단위 파일이라 새 주인이 가진다. Portfolio sitemap 에 CLI Manager 경로를 넣지 않는다 |
 
-## 선행 코드 변경 — solhun-web-page (아직 적용 안 함)
+## 선행 코드 변경 — solhun-web-page (✅ 2026-09-30 적용, `next.config.mjs`)
 
-프록시와 과도기 리디렉트가 제대로 돌려면 이 저장소에 두 가지가 먼저 들어가야 한다. 이번 커밋은 문서만이라 적용하지 않았다.
+**A. `assetPrefix` — 프록시 페이지의 JS·CSS·폰트가 깨지지 않게.** env `ASSET_PREFIX` 로 켠다.
+프록시된 HTML 은 `/_next/static/...` 을 상대경로로 부른다. 브라우저는 그걸 `solhun.com`(=Portfolio)에 요청하고, Portfolio 의
+Next 가 먼저 처리하므로 **CLI Manager 청크를 못 찾아 스타일 없는 화면**이 된다(rewrite 로 `/_next` 는 가로챌 수 없다).
+`ASSET_PREFIX=https://climanager.solhun.com` 이면 JS·CSS·`next/font` 폰트 URL 이 전부 절대주소가 된다.
+미설정이면 지금과 똑같이 상대경로. 절대 URL 이 아니면 빌드가 실패한다.
+**Production 에만 넣는다** — Preview 에 넣으면 프리뷰가 프로덕션 에셋(다른 해시)을 불러 깨진다.
 
-**A. `assetPrefix` — 프록시 페이지의 JS·CSS·폰트가 깨지지 않게.**
-프록시된 HTML 은 `/_next/static/...` 을 상대경로로 부른다. 브라우저는 그걸 `solhun.com` 에 요청하고, 그 경로는 Portfolio 의
-Next 가 먼저 처리하므로 **CLI Manager 의 청크를 찾지 못해 스타일 없는 화면**이 된다(rewrite 로도 `/_next` 는 가로챌 수 없다).
-에셋을 절대주소로 박으면 해결된다.
+폰트는 다른 출처에서 로드되므로 CORS 가 필요하다. Vercel 은 정적 파일에 `access-control-allow-origin: *` 를 붙인다
+(2026-09-30 `curl -sI https://climanager.solhun.com/_next/static/media/*.woff2` 로 확인).
 
-```js
-// next.config.mjs 의 nextConfig 에 추가
-// 프로덕션에서 NEXT_PUBLIC_SITE_URL 이 있을 때만 — 로컬 dev 는 상대경로 유지
-assetPrefix: process.env.NEXT_PUBLIC_SITE_URL || undefined,
-```
+**B. 과도기 리디렉트를 CLI Manager 경로로 좁혔다.** `REDIRECT_LEGACY_HOSTS=1` 이면 옛 호스트에서
+`LEGACY_MOVED_PATHS`(Portfolio 스니펫의 `MOVED_TO_CLI_MANAGER` 와 같은 목록)만 301, `/api/*` 는 308 로 보낸다.
+`/`·robots·sitemap·llms·privacy·terms·fair-social-ops 는 건드리지 않는다 — 과도기에 `/` 를 301 하면 브라우저가 영구
+캐시해서 도메인이 넘어간 뒤에도 그 방문자에게 포트폴리오 홈이 안 보이기 때문이다.
+**두 목록(이 파일·Portfolio 스니펫)은 함께 고친다.**
 
-`next/font` 폰트가 다른 출처에서 로드되므로 `https://climanager.solhun.com/_next/static/media/*.woff2` 응답에
-`Access-Control-Allow-Origin` 이 있는지 전환 전에 확인한다(없으면 폰트만 대체 글꼴로 보인다).
+### 검증 (2026-09-30, 로컬 `next build` + `next start` 3벌)
 
-**B. 과도기 리디렉트를 CLI Manager 경로로 좁힌다.**
-지금 `REDIRECT_LEGACY_HOSTS` 규칙은 제외 목록 외 **모든 경로(`/` 포함)** 를 301 로 보낸다. 3단계(도메인 이동) 전까지 누군가
-`solhun.com/` 을 열면 브라우저가 "`solhun.com/` → climanager" 301 을 **영구 캐시**해서, 도메인이 Portfolio 로 넘어간 뒤에도
-그 사람에게는 포트폴리오 홈이 안 보인다. 과도기 규칙은 위 처리표의 "301" 행과 **같은 경로 목록**만 대상으로 바꾼다
-(`/`, `/robots.txt`, `/sitemap.xml`, `/llms.txt` 는 대상에서 뺀다). B 를 적용하지 않을 거면 2단계에서
-`REDIRECT_LEGACY_HOSTS` 를 켜지 말고 2·3단계를 붙여서 진행한다 — 도메인 이동 뒤에는 Portfolio 가 같은 일을 한다.
+| 빌드 env | 확인한 것 | 결과 |
+|---|---|---|
+| 기본(아무것도 안 줌) | 에셋 경로, 옛 호스트 리디렉트 | `/_next/...` 상대경로, `/`·`/changelog`·`/api`·`/privacy` 모두 200 — **지금 프로덕션과 동일** |
+| 전환(`NEXT_PUBLIC_SITE_URL`·`ASSET_PREFIX`=`https://climanager.solhun.com`, `REDIRECT_LEGACY_HOSTS=1`) | 에셋·폰트 URL, 호스트 3개 × 경로 12개 | JS·CSS·woff2 전부 `https://climanager.solhun.com/_next/...`. 옛 호스트: `/`·robots·sitemap·llms·privacy·terms·fair-social-ops 200, `/changelog`·`/docs?x=1`·`/compare/*`·`/admin/*` 301(쿼리 유지), `/api/*` 308. 새 호스트: 전부 200 |
+| 프록시 흉내(`ASSET_PREFIX=http://localhost:3918`, 가짜 Portfolio :3919 가 스니펫의 rewrite 만 구현하고 `/_next` 는 404) | `localhost:3919/privacy` 를 브라우저로 | **스타일 정상 렌더**(CSS 는 :3918 에서, 로고는 fallback 프록시로 200). 주소창은 :3919 유지 |
+
+프록시 흉내에서 나온 것(프로덕션 영향 판단 포함):
+
+| 현상 | 로컬 | 프로덕션 |
+|---|---|---|
+| `next/font` woff2 CORS 차단 | `next start` 는 ACAO 를 안 붙여 차단 → Google Fonts 링크로 같은 Inter 가 대신 적용돼 화면은 정상 | Vercel 은 ACAO `*` → 문제 없음 |
+| `/?_rsc=...` 404 | 헤더의 홈 링크 prefetch 가 Portfolio 로 간다 | 같음. 클릭하면 Portfolio 홈으로 이동(의도대로). 콘솔에 404 한 줄 |
+| `/_vercel/insights/script.js` 404 | Vercel Analytics 스크립트가 Portfolio 경로로 간다 | 프록시 페이지 조회수는 CLI Manager Analytics 에 안 잡힌다(GA 는 잡힘 — `PROD_HOSTS` 에 solhun.com 포함) |
 
 ## Portfolio 에 넣을 `next.config.ts` 스니펫
 
@@ -156,11 +166,12 @@ export default nextConfig;
 3. Portfolio 배포 URL 에서 아래 "1단계 검증" 통과.
 
 ### 2. solhun-web-page 를 새 주소 기준으로 배포
-1. 선행 변경 A(assetPrefix)·B(과도기 규칙 축소)를 머지.
+1. 이 브랜치(선행 변경 A·B 포함)를 main 에 머지 — env 가 없으면 동작이 바뀌지 않는다(홈 Recently shipped 섹션 제외).
 2. Vercel Production env:
    ```bash
    vercel env add NEXT_PUBLIC_SITE_URL production --project solhun-web-page    # https://climanager.solhun.com
-   vercel env add REDIRECT_LEGACY_HOSTS production --project solhun-web-page   # 1 (B 를 적용했을 때만)
+   vercel env add ASSET_PREFIX production --project solhun-web-page            # https://climanager.solhun.com (Production 만)
+   vercel env add REDIRECT_LEGACY_HOSTS production --project solhun-web-page   # 1
    ```
 3. 프로덕션 재배포 — `NEXT_PUBLIC_*` 는 빌드 시점에 박히므로 env 만 바꾸면 반영되지 않는다.
 4. 이 시점부터 canonical·sitemap 이 `climanager.solhun.com` 이 된다. `solhun.com` 은 아직 이 프로젝트에 붙어 있다.
@@ -168,14 +179,22 @@ export default nextConfig;
 ### 3. solhun.com / www 를 Portfolio 로 이동
 한 도메인은 한 프로젝트에만 붙는다. **떼고 → 바로 붙인다**(그 사이 몇 초는 Vercel 404).
 - 대시보드: solhun-web-page → Settings → Domains 에서 `www.solhun.com`, `solhun.com` Remove → Portfolio → Add.
-- 또는 API(`vercel domains rm` 은 **계정에서 도메인 자체를 지우는 명령이라 쓰지 않는다**):
-  ```bash
-  curl -X DELETE "https://api.vercel.com/v9/projects/solhun-web-page/domains/www.solhun.com" -H "Authorization: Bearer $TOKEN"
-  curl -X DELETE "https://api.vercel.com/v9/projects/solhun-web-page/domains/solhun.com"     -H "Authorization: Bearer $TOKEN"
-  vercel domains add www.solhun.com <portfolio-project> --scope gyeonghunjeong-7007s-projects
-  vercel domains add solhun.com     <portfolio-project> --scope gyeonghunjeong-7007s-projects
-  ```
-  `<portfolio-project>` 이름은 Vercel 에서 확인(2026-09-30 `vercel project ls` 첫 페이지에는 보이지 않았다).
+- **Portfolio 프로젝트 = 홈페이지가 `portfolio-sage-five-xdfwq9lj38.vercel.app` 인 프로젝트.** 2026-09-30 이 CLI 가 접근하는
+  두 스코프(`gyeonghunjeong-7007s-projects`, `lightsoft-857726b5`)의 `vercel project ls --next` 전체(170줄)와
+  `vercel inspect` 어느 쪽에서도 **찾지 못했다** → 다른 Vercel 계정·팀 소속으로 보인다. 프로젝트 이름은 그 계정에서 확인한다.
+- 그래서 이동은 **계정을 넘는 작업**일 수 있다. solhun.com 은 `gyeonghunjeong-7007` 계정에 등록된 도메인이다.
+  - 같은 계정의 다른 프로젝트라면: 대시보드에서 떼고 붙이거나 API(`vercel domains rm` 은 **계정에서 도메인 자체를 지우는 명령이라
+    쓰지 않는다**):
+    ```bash
+    curl -X DELETE "https://api.vercel.com/v9/projects/solhun-web-page/domains/www.solhun.com" -H "Authorization: Bearer $TOKEN"
+    curl -X DELETE "https://api.vercel.com/v9/projects/solhun-web-page/domains/solhun.com"     -H "Authorization: Bearer $TOKEN"
+    vercel domains add www.solhun.com <Portfolio 프로젝트 이름> --scope <그 계정/팀>
+    vercel domains add solhun.com     <Portfolio 프로젝트 이름> --scope <그 계정/팀>
+    ```
+  - 다른 계정이라면: 도메인을 solhun-web-page 에서 뗀 뒤 Portfolio 쪽 계정에서 추가하면 Vercel 이 **TXT 소유 확인 레코드**를 요구할 수
+    있다(Cloudflare 에 `_vercel` TXT 추가). 또는 `vercel domains move solhun.com <대상 계정/팀>` 으로 도메인 자체를 옮긴다 — 그 경우
+    같은 도메인에 걸린 `excel.solhun.com`·`india.solhun.com`·`climanager.solhun.com` 연결의 영향부터 확인한다. **사람 결정.**
+  - 떼고 붙이는 사이 몇 초는 Vercel 404 다. TXT 확인이 필요하면 **미리** 넣어 두고 진행한다.
 - `climanager.solhun.com` 은 solhun-web-page 에 그대로 둔다. DNS 는 바꾸지 않는다.
 
 ### 4. 검증 (아래 명령)
@@ -210,7 +229,7 @@ curl -sI https://www.solhun.com | grep -i x-vercel-id
 curl -s https://www.solhun.com | grep -o "<title>[^<]*</title>"                           # 포트폴리오 제목
 ```
 
-과도기 규칙(이 저장소 `REDIRECT_LEGACY_HOSTS`)은 2026-09-29 로컬 빌드에서 30개 경우를 확인했다(선행 변경 B 적용 전 기준).
+이 저장소 쪽 규칙은 위 「선행 코드 변경 › 검증」 표에서 로컬 빌드 3벌로 확인했다(2026-09-30).
 
 ## 롤백
 
@@ -221,7 +240,7 @@ curl -s https://www.solhun.com | grep -o "<title>[^<]*</title>"                 
 | 3단계 후 문제 | `solhun.com`·`www.solhun.com` 을 Portfolio 에서 떼고 solhun-web-page 에 다시 붙인다(3단계 명령의 반대). 이어서 위 2단계 롤백으로 **이전 전 배포**까지 되돌리면 완전한 원상태(canonical www.solhun.com) |
 
 - 301 은 브라우저가 영구 캐시한다. Portfolio 의 301 대상(CLI Manager 경로)은 롤백해도 새 주소가 살아 있는 한 무해하다.
-  위험한 건 `/` 같은 **Portfolio 가 가질 경로**에 301 이 찍히는 경우라서 선행 변경 B 가 필요하다.
+  위험한 건 `/` 같은 **Portfolio 가 가질 경로**에 301 이 찍히는 경우인데, 선행 변경 B 로 과도기 규칙에서 뺐다.
 - `climanager.solhun.com` 연결은 어느 롤백에서도 남겨 둬도 된다.
 
 ## solhun.com 을 참조하는 곳 전수
@@ -260,6 +279,6 @@ curl -s https://www.solhun.com | grep -o "<title>[^<]*</title>"                 
 
 1. ~~solhun.com 을 무엇으로 남길지~~ → **Portfolio 가 가져간다(2026-09-30 확정).**
 2. OAuth 동의 화면 URL 을 새 주소로 옮길 시점(옮기면 프록시 세 경로를 301 로 전환).
-3. 선행 변경 A·B 적용과 2·3단계 실행 날짜.
+3. 2·3단계 실행 날짜, 그리고 Portfolio 프로젝트가 다른 Vercel 계정이면 도메인 연결 방식(TXT 확인 vs `domains move`).
 4. solhun.com 기본 호스트를 apex 와 www 중 어디로 둘지(현재 apex → www 307).
 5. LemonSqueezy 새 API 키 발급 후 설정 확인, 도메인 자동 갱신 확인.

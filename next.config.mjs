@@ -1,14 +1,24 @@
-// 도메인 이전(solhun.com → climanager.solhun.com)용 301 리디렉트.
-// 기본은 꺼져 있다. 이전 당일 Vercel 환경변수 REDIRECT_LEGACY_HOSTS=1 과
-// NEXT_PUBLIC_SITE_URL=https://climanager.solhun.com 을 넣고 재배포하면 켜진다.
+// 도메인 이전(solhun.com → climanager.solhun.com) 과도기용 리디렉트.
+// solhun.com·www 는 최종적으로 Portfolio 프로젝트로 넘어가고, 그 뒤 옛 경로 처리는 Portfolio 가 맡는다.
+// 여기 규칙은 "이 프로젝트에 새 주소 env 로 배포 ~ 도메인을 Portfolio 로 옮기기" 사이에만 동작한다.
+// 기본은 꺼져 있다. REDIRECT_LEGACY_HOSTS=1 + NEXT_PUBLIC_SITE_URL=https://climanager.solhun.com 으로 켠다.
 // (절차·롤백: docs/domain-migration-climanager.md)
 const LEGACY_HOSTS = ["solhun.com", "www.solhun.com"]
 
-// 옛 도메인에 그대로 남길 경로.
-// - privacy / terms / apps/fair-social-ops: Google OAuth 동의 화면에 등록된 URL 일 수 있어
-//   Google Cloud 콘솔을 바꾸기 전까지는 옮기지 않는다(사람 결정 항목).
-// - api / _next: POST 는 301 을 받으면 GET 으로 바뀌어 깨지고, 남긴 페이지가 자기 JS/CSS 를 읽어야 한다.
-const LEGACY_HOST_KEEP_PATHS = ["privacy", "terms", "apps/fair-social-ops", "api", "_next"]
+// CLI Manager 전용 경로만 보낸다. Portfolio 스니펫(문서)의 MOVED_TO_CLI_MANAGER 와 같은 목록이어야 한다.
+// "/"·robots·sitemap·llms 는 곧 Portfolio 것이 되므로 절대 넣지 않는다 — 301 은 브라우저가 영구 캐시해서,
+// 과도기에 "/" 를 보내 버리면 도메인이 넘어간 뒤에도 그 방문자에게는 포트폴리오 홈이 안 보인다.
+// privacy·terms·apps/fair-social-ops 는 OAuth 동의 화면 URL 이라 옮기지 않는다(Portfolio 가 프록시로 유지).
+const LEGACY_MOVED_PATHS = [
+  "/changelog",
+  "/docs",
+  "/gallery",
+  "/roadmap",
+  "/feedback",
+  "/compare/:path*",
+  "/admin/:path*",
+  "/products/:path*",
+]
 
 function buildLegacyHostRedirects() {
   if (process.env.REDIRECT_LEGACY_HOSTS !== "1") return []
@@ -22,14 +32,27 @@ function buildLegacyHostRedirects() {
     throw new Error(`NEXT_PUBLIC_SITE_URL (${siteUrl}) must not be a legacy host while REDIRECT_LEGACY_HOSTS=1`)
   }
 
-  // 남길 경로와 그 하위만 제외하고 나머지 경로는 그대로 붙여서 보낸다.
-  const keepPattern = LEGACY_HOST_KEEP_PATHS.map((path) => `${path}(?:/|$)`).join("|")
-  return LEGACY_HOSTS.map((host) => ({
-    source: `/:path((?!${keepPattern}).*)`,
-    has: [{ type: "host", value: host }],
-    destination: `${siteUrl}/:path`,
-    statusCode: 301,
-  }))
+  return LEGACY_HOSTS.flatMap((host) => {
+    const has = [{ type: "host", value: host }]
+    return [
+      ...LEGACY_MOVED_PATHS.map((source) => ({ source, has, destination: `${siteUrl}${source}`, statusCode: 301 })),
+      // API 는 308: 301 이면 POST 가 GET 으로 바뀐다
+      { source: "/api/:path*", has, destination: `${siteUrl}/api/:path*`, statusCode: 308 },
+    ]
+  })
+}
+
+// Portfolio 가 /privacy 같은 페이지를 rewrite 프록시로 보여 줄 때, 그 HTML 이 부르는 /_next/static 은
+// 브라우저가 solhun.com(=Portfolio)에 요청해서 못 찾는다 → 스타일 없는 화면.
+// ASSET_PREFIX 에 이 사이트의 절대주소를 주면 JS·CSS·폰트를 그 주소에서 직접 받는다.
+// 기본(미설정)은 지금과 같은 상대경로. Production 에만 설정한다 — Preview 에 넣으면 프리뷰가 프로덕션 에셋을 부른다.
+function resolveAssetPrefix() {
+  const assetPrefix = (process.env.ASSET_PREFIX || "").replace(/\/+$/, "")
+  if (!assetPrefix) return undefined
+  if (!/^https?:\/\//.test(assetPrefix)) {
+    throw new Error(`ASSET_PREFIX must be an absolute URL (got ${assetPrefix})`)
+  }
+  return assetPrefix
 }
 
 /** @type {import('next').NextConfig} */
@@ -44,6 +67,7 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  assetPrefix: resolveAssetPrefix(),
   async redirects() {
     return buildLegacyHostRedirects()
   },

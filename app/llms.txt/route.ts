@@ -22,8 +22,11 @@ A desktop application for macOS that centralizes management of multiple CLI agen
 - [Project Organization](${SITE_URL}): Organize all projects in one centralized workspace
 - [Agent Customization](${SITE_URL}): Rename CLI agents to define their specific roles and purposes
 - [Editor Switching](${SITE_URL}): Switch instantly between VS Code, Cursor, and other code editors
-- [AI Control API](${SITE_URL}/changelog): Let an AI open and drive terminal sessions you can watch and take over
+- [AI Control API](${SITE_URL}/docs/ai-control-api): Let an AI open and drive terminal sessions you can watch and take over (MCP and REST, local-only, token-protected)
 - [Agent Hooks & Usage Limits](${SITE_URL}/changelog): Session status from official Claude Code / Codex hooks, with usage-limit meters
+- [Diff Review](${SITE_URL}/gallery): Review agent changes in-app and send line comments back to the agent
+- [Git Worktrees](${SITE_URL}/gallery): Each worktree becomes its own workspace with its own sessions
+- [Session Memo](${SITE_URL}/gallery): A memo pad per session (Cmd+J)
 
 ## Recent Releases
 
@@ -32,6 +35,7 @@ ${recent}
 ## Documentation
 
 - [Getting Started](${SITE_URL}/docs): Installation guide and initial setup instructions
+- [AI Control API guide](${SITE_URL}/docs/ai-control-api): Setup, MCP tools, REST endpoints, session states and safety rules
 
 ## Resources
 
@@ -46,7 +50,7 @@ ${recent}
 - Supported CLI Tools: Claude Code, Gemini CLI, Codex CLI, and custom CLI tools
 - Data Privacy: All data processed locally, no external data transmission
 - Security: Apple notarized application
-- Price: Free core features
+- Price: Free and open source (MIT license)
 
 ## Optional
 

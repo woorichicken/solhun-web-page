@@ -244,10 +244,15 @@ export default function AiControlApiPage() {
               ["2", "Usage error", "Fix the arguments"],
             ]}
           />
-          <p className="text-[#605A57] text-sm leading-6 font-sans rounded-lg bg-[#F5F5F4] border border-[rgba(55,50,47,0.08)] px-4 py-3">
-            The skill is not in the public repository yet. Everything it does is available through the REST calls above
-            and the MCP tools.
-          </p>
+          <P>
+            Install it into Claude Code, Codex or any agent that reads skills — the source is on GitHub at{" "}
+            <a href="https://github.com/woorichicken/climanager-session" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2">
+              woorichicken/climanager-session
+            </a>{" "}
+            (MIT). Then ask your agent in plain words, for example “open <Code>~/code/api</Code> in CLI Manager with Claude
+            Code and have it fix the failing test”.
+          </P>
+          <CodeBlock>{`npx skills add woorichicken/climanager-session@climanager-session`}</CodeBlock>
         </Section>
 
         <Section id="states" title="Session states">

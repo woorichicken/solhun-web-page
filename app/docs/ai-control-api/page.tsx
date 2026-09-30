@@ -6,7 +6,7 @@ import { PageWrapper } from "../../../components/page-wrapper"
 
 // 이 페이지의 정본은 CLImanger 저장소 docs/architecture/control-api.md(엔드포인트·상태 계약)와
 // climanager-session 스킬(SKILL.md, 에이전트용 사용법)이다. 앱이 바뀌면 거기부터 보고 맞춘다.
-// 기준: CLI Manager v1.10.0 (2026-09-30 확인)
+// 기준: CLI Manager v1.11.0 (2026-10-01 확인)
 
 export const metadata: Metadata = {
   title: "AI Control API",
@@ -200,7 +200,7 @@ export default function AiControlApiPage() {
             Claude Code then gets these tools: <Code>list_workspaces</Code>, <Code>list_templates</Code>,{" "}
             <Code>list_sessions</Code>, <Code>open_session</Code>, <Code>send_input</Code> (with optional{" "}
             <Code>wait_seconds</Code>), <Code>wait_for_idle</Code>, <Code>read_output</Code>, <Code>focus_session</Code>,{" "}
-            <Code>release_session</Code> and <Code>close_session</Code>. Errors come back as tool results the model can
+            <Code>rename_session</Code>, <Code>release_session</Code> and <Code>close_session</Code>. Errors come back as tool results the model can
             read, and screen output is plain text.
           </P>
         </Section>
@@ -215,7 +215,7 @@ export default function AiControlApiPage() {
             head={["Status", "Meaning", "What to do"]}
             rows={[
               [<Code key="c">409 awaiting_input</Code>, "A question is on screen (permission prompt, folder trust, menu).", "Read the screen, answer with keys — not text."],
-              [<Code key="c">403 not_controlled</Code>, "Not a session the API opened, or the user clicked Disconnect AI.", "Stop using that session."],
+              [<Code key="c">409 disconnected</Code>, "You clicked Disconnect AI while the agent was waiting on that session.", "Stop working in that session unless the user asks to continue."],
               [<Code key="c">timedOut: true</Code>, "The wait ended but the session is still busy.", "Not a failure — wait again or report progress."],
             ]}
           />
@@ -277,6 +277,18 @@ export default function AiControlApiPage() {
             <li>
               <Code>memo</Code> — the session&apos;s memo pad (⌘J), read-only. Added in v1.10.0.
             </li>
+            <li>
+              <Code>aiControlled</Code> — the session is marked as AI-driven (green in the sidebar). Set when the API
+              opens a session, and the first time it reads, types into, waits on or focuses one. Added in v1.11.0.
+            </li>
+            <li>
+              <Code>screenPartial: true</Code> — the API was switched on while this terminal was already running, so
+              output from before that moment is missing from what the API can read.
+            </li>
+            <li>
+              <Code>sleptMs</Code> (on wait results) — time the machine spent asleep during the wait. It does not count
+              against the timeout.
+            </li>
           </ul>
         </Section>
 
@@ -284,11 +296,17 @@ export default function AiControlApiPage() {
           <Table
             head={["The API can", "The API cannot"]}
             rows={[
-              ["List workspaces and templates", "Read or type into sessions you opened yourself"],
-              ["Open sessions (and register a new folder as a workspace)", "Act on a session after you click Disconnect AI"],
-              ["Drive, read, focus, release and close the sessions it opened", "Type text while a question is on screen (unless it passes force)"],
+              ["List workspaces, templates and sessions", "Do anything while the API is switched off (the default)"],
+              ["Open sessions (and register a new folder as a workspace)", "Type text while a question is on screen (unless it passes force)"],
+              ["Read, type into, rename, focus, release and close any session — including ones you opened", "Keep waiting on a session after you click Disconnect AI"],
             ]}
           />
+          <P>
+            Since v1.11.0 the API reaches every session in the app while it is switched on, not only the ones it
+            opened. A session turns green the first time an agent works in it, so you can see where it is. Disconnect
+            AI stops an agent that is waiting on that session; to end access altogether, switch the API off in
+            Settings → Agents.
+          </P>
           <ul className="list-disc pl-6 flex flex-col gap-2 text-[#605A57] text-base leading-7 font-sans">
             <li>
               <strong>Answer questions with keys.</strong> Enter picks the highlighted option — on a folder-trust dialog
@@ -319,15 +337,16 @@ export default function AiControlApiPage() {
               ["GET", <Code key="c">/v1/health</Code>, "—"],
               ["GET", <Code key="c">/v1/workspaces</Code>, <Code key="q">?query=</Code>],
               ["GET", <Code key="c">/v1/templates</Code>, "—"],
-              ["GET", <Code key="c">/v1/sessions</Code>, "Sessions under AI control"],
+              ["GET", <Code key="c">/v1/sessions</Code>, <Code key="q">?scope=ai|all&amp;query=</Code>],
               ["POST", <Code key="c">/v1/sessions</Code>, "path or workspaceId; template or command; name, prompt, focus"],
               ["GET", <Code key="c">/v1/sessions/:id</Code>, "—"],
               ["GET", <Code key="c">/v1/sessions/:id/output</Code>, <Code key="q">?mode=screen|tail&amp;lines=</Code>],
               ["POST", <Code key="c">/v1/sessions/:id/input</Code>, "text, submit (default true), keys[], force"],
               ["POST", <Code key="c">/v1/sessions/:id/wait</Code>, "timeoutMs (≤ 600000), quietMs, lines"],
               ["POST", <Code key="c">/v1/sessions/:id/focus</Code>, "—"],
-              ["POST", <Code key="c">/v1/sessions/:id/release</Code>, "Hands the session to you; the API loses access"],
-              ["DELETE", <Code key="c">/v1/sessions/:id</Code>, "Kills the terminal and removes the session"],
+              ["POST", <Code key="c">/v1/sessions/:id/rename</Code>, "name (up to 80 characters)"],
+              ["POST", <Code key="c">/v1/sessions/:id/release</Code>, "Hands the session to you and clears the AI mark"],
+              ["DELETE", <Code key="c">/v1/sessions/:id</Code>, "Kills the terminal and removes the session — any session"],
             ]}
           />
           <P>

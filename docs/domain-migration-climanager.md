@@ -1,7 +1,20 @@
 # 도메인 이전: solhun.com → climanager.solhun.com
 
-2026-09-29 조사, 2026-09-30 전제 확정. 이 문서는 **준비 상태와 실행 순서**를 담는다. 실제 전환(환경변수 변경·재배포·
-도메인 이동)은 아직 하지 않았다.
+2026-09-29 조사, **2026-09-30 전환 완료.** 아래 「전환 완료 기록」이 실제 결과이고, 그 뒤 절들은 준비·절차·롤백의 근거로 남긴다.
+
+## 전환 완료 기록 (2026-09-30)
+
+| 단계 | 한 일 | 확인 |
+|---|---|---|
+| changelog | 운영 DB 에 `docs/sql/2026-09-30-changelog-english.sql` 적용 | 25→31행, 한글 0행, `/changelog` 영어 |
+| 2. 이 사이트 | Production env `NEXT_PUBLIC_SITE_URL`·`ASSET_PREFIX`=`https://climanager.solhun.com`, `REDIRECT_LEGACY_HOSTS=1` 후 PR #3 머지 배포 | canonical·sitemap 이 `climanager.solhun.com` |
+| 1. Portfolio | 같은 계정의 새 프로젝트 **`solhun-portfolio`**(woorichicken/Portfolio)에 `CLI_MANAGER_ROUTES=1` 재배포 | `solhun-portfolio.vercel.app` 에서 301·308·프록시 200 |
+| 3. 도메인 | API 로 `solhun.com`·`www.solhun.com` 을 solhun-web-page 에서 떼고(`DELETE /v9/projects/…/domains`) solhun-portfolio 에 추가. apex → www **307** 유지 | 둘 다 verified, `www.solhun.com` 제목 = 포트폴리오 |
+| 4. 검증 | 아래 「검증 명령」 3단계 후 버전 | `/changelog`·`/docs`·`/gallery`·`/compare/*`·`/admin/*` 301, `/api/*` 308, `/privacy`·`/terms`·`/apps/fair-social-ops` 200 + CSS 가 `climanager.solhun.com/_next`, `excel`·`india` 서브도메인 영향 없음 |
+| 앱 | CLI_manager PR #15 — `WEBSITE_URL`·README·릴리즈 검증 명령을 새 주소로(다음 릴리즈에 포함) | typecheck 통과 |
+
+남은 것: Search Console 에 `climanager.solhun.com` 속성·sitemap, GA4 스트림 URL, OAuth 동의 화면 URL 이전 시점, 도메인 갱신(2026-12-01),
+**`CLImanger/scripts/post-release.cjs` 가 여전히 이 저장소 주 체크아웃의 다운로드 링크를 고친다**(사이트는 이제 climanager 쪽이라 동작은 맞다).
 
 ## 확정된 목표 구조
 

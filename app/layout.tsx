@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter, Instrument_Serif } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { GoogleAnalytics } from "@/components/google-analytics"
+import { SITE_URL } from "@/lib/site"
 import "./globals.css"
 
 const inter = Inter({
@@ -21,7 +22,7 @@ const instrumentSerif = Instrument_Serif({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://www.solhun.com"),
+  metadataBase: new URL(SITE_URL),
   icons: {
     icon: "/solhun-logo.png",
     apple: "/solhun-logo.png",
@@ -68,7 +69,7 @@ export const metadata: Metadata = {
     description: "Manage Claude Code, Codex CLI, and Gemini CLI from a single dashboard. Rename agents, organize projects, and switch editors instantly.",
     images: [
       {
-        url: "/cli-main.png",
+        url: "/og-climanager.png",
         width: 1200,
         height: 630,
         alt: "CLI Manager Dashboard - Manage all CLI agents in one place",
@@ -79,7 +80,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CLI Manager - All Your CLI Agents in One Place",
     description: "Manage Claude Code, Codex CLI, and Gemini CLI from a single dashboard. The ultimate tool for AI-powered development.",
-    images: ["/cli-main.png"],
+    images: ["/og-climanager.png"],
     creator: "@climanager",
   },
   alternates: {

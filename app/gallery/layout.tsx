@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     siteName: "CLI Manager",
     images: [
       {
-        url: "/worktree-create.png",
+        url: "/og-climanager.png",
         width: 1200,
         height: 630,
         alt: "CLI Manager Gallery - Feature Screenshots",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     title: "Gallery - Explore CLI Manager Features in Action",
     description:
       "See CLI Manager in action with real screenshots: Worktree, Git integration, port management, terminal templates, and playground.",
-    images: ["/worktree-create.png"],
+    images: ["/og-climanager.png"],
     creator: "@climanager",
   },
   robots: {
@@ -70,11 +70,11 @@ const jsonLd = {
     applicationCategory: "DeveloperApplication",
   },
   image: [
-    "/worktree-create.png",
-    "/git-integration-1.png",
-    "/port-monitor.png",
-    "/terminal-templates.png",
-    "/playground.png",
+    "/screenshots/ai-control-session.webp",
+    "/screenshots/diff-review.webp",
+    "/screenshots/git-panel.webp",
+    "/screenshots/app-dashboard.webp",
+    "/screenshots/playground.webp",
   ],
 }
 

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     description: "Stay up to date with the latest improvements, new features, bug fixes, and updates for CLI Manager.",
     images: [
       {
-        url: "/cli-main.png",
+        url: "/og-climanager.png",
         width: 1200,
         height: 630,
         alt: "CLI Manager Changelog",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CLI Manager Changelog - Latest Updates & Releases",
     description: "Stay up to date with the latest improvements and updates for CLI Manager.",
-    images: ["/cli-main.png"],
+    images: ["/og-climanager.png"],
   },
   alternates: {
     canonical: "/changelog",

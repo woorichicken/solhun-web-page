@@ -13,6 +13,9 @@ const comparisonData = [
   { feature: "Notifications", comp: "Easy to Miss", solhun: "Dedicated Alerts", compStatus: "no" },
   { feature: "Git Worktree", comp: "Manual Commands", solhun: "One-Click Management", compStatus: "warning" },
   { feature: "File Access", comp: "Copy/Paste Paths", solhun: "Cmd+Click to Open", compStatus: "partial" },
+  { feature: "Reviewing Changes", comp: "git diff in Another Window", solhun: "In-App Diff with Line Comments", compStatus: "warning" },
+  { feature: "Agent Status", comp: "Guess from the Terminal", solhun: "Official Hook Events", compStatus: "partial" },
+  { feature: "Agents Driving Agents", comp: "Headless claude -p", solhun: "AI Control API, Visible Sessions", compStatus: "no" },
 ]
 
 export default function CliAgentsComparison() {

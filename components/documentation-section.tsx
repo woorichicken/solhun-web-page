@@ -20,26 +20,27 @@ export default function DocumentationSection() {
   const [activeCard, setActiveCard] = useState(0)
   const [animationKey, setAnimationKey] = useState(0)
 
+  // 스크린샷: 데모 인스턴스에서 찍은 v1.10.0 화면(public/screenshots) — 개인 경로·계정 없음
   const cards = [
     {
-      title: "Choose the Right Agent",
-      description: "Claude Code for general tasks, Codex CLI for complex logic,\nGemini CLI for design work with Antigravity.",
-      image: "/main-gemini.png",
-    },
-    {
-      title: "Name Agents for Parallel Work",
-      description: "Rename agents by role: 'Frontend-React', 'Backend-API'.\nTrack multiple workflows at a glance.",
-      image: "/cli-rename.png",
+      title: "Run Every Agent Side by Side",
+      description: "Claude Code, Codex CLI, Gemini CLI and shells in one sidebar.\nGroup projects into folders and name sessions by role.",
+      image: "/screenshots/app-dashboard.webp",
     },
     {
       title: "Git Worktree Parallel Workflows",
-      description: "Run agents on separate branches simultaneously.\nZero conflicts, pure parallel productivity.",
-      image: "/worktree-create.png",
+      description: "Each worktree becomes its own workspace.\nRun agents on separate branches with zero conflicts.",
+      image: "/screenshots/git-panel.webp",
     },
     {
-      title: "Easy Merge & Clean",
-      description: "Merge branches and clean up worktrees with simple UI.\nNo command-line memorization required.",
-      image: "/git-restore.png",
+      title: "Review Before You Merge",
+      description: "Read the agent's diff in-app and send line comments\nback to its terminal with file and line numbers.",
+      image: "/screenshots/diff-review.webp",
+    },
+    {
+      title: "Let an AI Drive a Session",
+      description: "The AI Control API opens terminals you can watch.\nTake over or disconnect the AI at any time.",
+      image: "/screenshots/ai-control-session.webp",
     },
   ]
 
@@ -127,7 +128,7 @@ export default function DocumentationSection() {
                 src={cards[activeCard].image}
                 alt={cards[activeCard].title}
                 fill
-                className="object-cover transition-opacity duration-300"
+                className="object-cover object-left-top transition-opacity duration-300"
               />
             </div>
           </div>

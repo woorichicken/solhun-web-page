@@ -8,7 +8,7 @@ import { Bot, FlaskConical, GitBranch, GitCompare, Github, Network, StickyNote, 
 
 // 스틸 이미지는 데모 인스턴스(가짜 프로젝트)에서 찍은 v1.10.0 화면(public/screenshots)으로 바꿨다.
 // 옛 전체 화면 캡처(worktree-*.png·main-*.png 등)는 개인 경로·실제 프로젝트명이 보여 뺐다.
-// 영상(.mp4)은 아직 옛 녹화다 — 다시 찍을 때까지 첫 번째 자리에 둔다.
+// 옛 녹화 영상(.mp4)은 개인 경로·실제 프로젝트명이 찍혀 있어 뺐다(2026-09-30). 데모 인스턴스로 다시 찍으면 첫 번째 자리에 넣는다.
 const products = [
   {
     id: "ai-control-api",
@@ -42,7 +42,6 @@ const products = [
     logo: <GitBranch className="h-5 w-5 text-purple-600" />,
     badge: "Popular",
     galleryImages: [
-      "/videos/makeworktree.mp4", // 비디오가 첫 번째
       "/screenshots/worktree-sidebar.webp",
       "/screenshots/git-panel.webp",
     ]
@@ -55,7 +54,6 @@ const products = [
     logo: <Github className="h-5 w-5 text-gray-800" />,
     badge: "Essential",
     galleryImages: [
-      "/videos/commit-push.mp4", // 비디오가 첫 번째
       "/screenshots/git-panel.webp",
       "/screenshots/diff-review.webp",
     ]
@@ -67,8 +65,6 @@ const products = [
     image: "/screenshots/app-dashboard.webp",
     logo: <Network className="h-5 w-5 text-blue-500" />,
     galleryImages: [
-      "/videos/port-manager.mp4", // 비디오가 첫 번째
-      "/videos/port-kill.mp4",
       "/screenshots/app-dashboard.webp",
       "/port-1.png",
       "/port-2.png",
@@ -81,7 +77,6 @@ const products = [
     image: "/template-1.png",
     logo: <Terminal className="h-5 w-5 text-green-600" />,
     galleryImages: [
-      "/videos/templates.mp4", // 비디오가 첫 번째
       "/template-1.png",
       "/template-2.png",
       "/template-3.png",
@@ -94,7 +89,6 @@ const products = [
     image: "/screenshots/playground.webp",
     logo: <FlaskConical className="h-5 w-5 text-orange-500" />,
     galleryImages: [
-      "/videos/playground.mp4", // 비디오가 첫 번째
       "/screenshots/playground.webp",
     ]
   },

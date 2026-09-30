@@ -31,7 +31,7 @@ export const faqData: FAQItem[] = [
   {
     question: "Can an AI agent control CLI Manager?",
     answer:
-      "Yes, if you turn it on. The AI Control API (Settings > Agents, off by default) lets Claude Code, Codex or a script open terminal sessions, send prompts and read the screen over a local-only, token-protected connection. It can only touch sessions it opened, and you can disconnect it from any session.",
+      "Yes, if you turn it on. The AI Control API (Settings > Agents, off by default) lets Claude Code, Codex or a script open terminal sessions, send prompts and read the screen over a local-only, token-protected connection. While it is on, the agent can work in any session in the app — including ones you opened — and each session it works in turns green. Disconnect AI stops it in that session; switching the API off ends its access.",
   },
   {
     question: "Is my data safe?",

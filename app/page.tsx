@@ -17,8 +17,8 @@ import { HERO_DEMO_VIDEO } from "../lib/demo-video"
 
 // 다운로드 URL
 const DOWNLOAD_URLS = {
-  arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.10.0-arm64.dmg",
-  x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.10.0-x64.dmg",
+  arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.11.0-arm64.dmg",
+  x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.11.0-x64.dmg",
 }
 
 // 홈 기능 섹션. 스크린샷은 데모 인스턴스(가짜 프로젝트·별도 프로필)에서 v1.10.0 으로 찍었다 — 개인 경로·계정이 없다.

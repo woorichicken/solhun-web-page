@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: "Learn how to use CLI Manager to organize Claude Code, Codex CLI, and Gemini CLI. Complete guides, tutorials, and API references.",
     images: [
       {
-        url: "/cli-main.png",
+        url: "/og-climanager.png",
         width: 1200,
         height: 630,
         alt: "CLI Manager Documentation",
@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CLI Manager Documentation - Getting Started Guide",
     description: "Learn how to use CLI Manager. Complete guides, tutorials, and API references.",
-    images: ["/cli-main.png"],
+    images: ["/og-climanager.png"],
   },
   alternates: {
     canonical: "/docs",

@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     description: "Manage Claude Code, Codex CLI, and Gemini CLI from a single dashboard. Rename agents, organize projects, and switch editors instantly.",
     images: [
       {
-        url: "/cli-main.png",
+        url: "/og-climanager.png",
         width: 1200,
         height: 630,
         alt: "CLI Manager Dashboard - Manage all CLI agents in one place",
@@ -80,7 +80,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "CLI Manager - All Your CLI Agents in One Place",
     description: "Manage Claude Code, Codex CLI, and Gemini CLI from a single dashboard. The ultimate tool for AI-powered development.",
-    images: ["/cli-main.png"],
+    images: ["/og-climanager.png"],
     creator: "@climanager",
   },
   alternates: {

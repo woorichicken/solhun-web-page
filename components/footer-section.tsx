@@ -54,9 +54,6 @@ export default function FooterSection() {
               <Link href="/" className="text-[#49423D] text-sm font-normal leading-5 font-sans cursor-pointer hover:text-[#37322F] transition-colors">
                 Features
               </Link>
-              <Link href="/pricing" className="text-[#49423D] text-sm font-normal leading-5 font-sans cursor-pointer hover:text-[#37322F] transition-colors">
-                Pricing
-              </Link>
               <Link href="/gallery" className="text-[#49423D] text-sm font-normal leading-5 font-sans cursor-pointer hover:text-[#37322F] transition-colors">
                 Gallery
               </Link>

@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "CLI Manager",
     images: [
       {
-        url: "/cli-main-gemini.png",
+        url: "/og-climanager.png",
         width: 1200,
         height: 630,
         alt: "CLI Manager Features - AI-Powered Development Tools",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     title: "Features - Powerful Tools for AI-Powered Development",
     description:
       "Supercharge your workflow with intelligent features: Worktree management, Git integration, port management, terminal templates, and playground.",
-    images: ["/cli-main-gemini.png"],
+    images: ["/og-climanager.png"],
     creator: "@climanager",
   },
   robots: {

@@ -5,19 +5,80 @@ import { useState } from "react"
 import { ContainerScroll } from "../components/ui/container-scroll-animation"
 import CTASection from "../components/cta-section"
 import { PageWrapper } from "../components/page-wrapper"
-import { ScrollVideo } from "../components/scroll-video"
+import { DemoVideoPlayer } from "../components/demo-video"
 import Link from "next/link"
+import Image from "next/image"
 import Script from "next/script"
 import { ProductHuntSticker } from "../components/product-hunt-sticker"
 import FAQSection, { faqData } from "../components/faq-section"
 import TestimonialsSection from "../components/testimonials-section"
 import { RECENT_RELEASES } from "../lib/recent-releases"
+import { HERO_DEMO_VIDEO } from "../lib/demo-video"
 
 // 다운로드 URL
 const DOWNLOAD_URLS = {
   arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.10.0-arm64.dmg",
   x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.10.0-x64.dmg",
 }
+
+// 홈 기능 섹션. 스크린샷은 데모 인스턴스(가짜 프로젝트·별도 프로필)에서 v1.10.0 으로 찍었다 — 개인 경로·계정이 없다.
+// 새로 찍을 때도 같은 방식으로(사용자 앱에서 찍지 않는다).
+interface HomeFeature {
+  title: string
+  description: string
+  image: string
+  alt: string
+  link?: { href: string; label: string }
+}
+
+const FEATURES: HomeFeature[] = [
+  {
+    title: "All CLI Agents, One Dashboard",
+    description:
+      "Claude Code, Codex CLI, Gemini CLI and plain shells live side by side in one sidebar. Group projects into folders, name each session by its role, and switch with a shortcut — every session keeps running while you look elsewhere.",
+    image: "/screenshots/app-dashboard.webp",
+    alt: "CLI Manager sidebar with folders, workspaces and sessions, and a running dev server",
+    link: { href: "/docs", label: "Learn more →" },
+  },
+  {
+    title: "Let an AI Drive a Terminal You Can Watch",
+    description:
+      "With the AI Control API, Claude Code, Codex or a script can open sessions in CLI Manager, send prompts and read the screen. They are ordinary terminals — green in the sidebar, marked “AI connected” — and you can type into them or take them back at any time.",
+    image: "/screenshots/ai-control-session.webp",
+    alt: "A session opened through the AI Control API, shown in green with an AI connected badge",
+    link: { href: "/docs/ai-control-api", label: "Read the AI Control API guide →" },
+  },
+  {
+    title: "Review Agent Changes In-App",
+    description:
+      "Open the diff for any workspace, select lines, and send a comment — with file and line numbers — straight back to the agent's terminal. Worktrees compare against the branch they forked from, including new files.",
+    image: "/screenshots/diff-review.webp",
+    alt: "Diff review window with added and removed lines and a comment box that sends to a terminal",
+  },
+  {
+    title: "Know When an Agent Needs You",
+    description:
+      "Session status comes from official Claude Code and Codex hooks, so a permission prompt is never mistaken for a finished task. Usage alerts warn you before the 5-hour or weekly limit cuts your agent off.",
+    image: "/screenshots/settings-agents-lower.webp",
+    alt: "Agents settings with official hook integration and usage alert thresholds for Claude Code and Codex",
+    link: { href: "/changelog", label: "See what's new →" },
+  },
+  {
+    title: "Worktrees and Git, Built In",
+    description:
+      "Create a Git worktree and it becomes its own workspace with its own sessions. Stage, commit, push and browse history from the Source Control panel — no commands to remember.",
+    image: "/screenshots/git-panel.webp",
+    alt: "Source Control panel next to a git log, with a worktree branch in the sidebar",
+    link: { href: "/gallery", label: "See the gallery →" },
+  },
+  {
+    title: "A Memo Pad for Every Session",
+    description:
+      "Press ⌘J to write down what a session is for. Memos save as you type, stay with the session across restarts, and an AI working through the Control API can read them.",
+    image: "/screenshots/session-memo.webp",
+    alt: "Session memo pad open over a terminal",
+  },
+]
 
 // JSON-LD structured data for SEO
 const jsonLd = {
@@ -41,6 +102,9 @@ const jsonLd = {
     "AI Control API: let an AI drive terminal sessions you can watch and take over",
     "Session status from official Claude Code and Codex hooks, with usage-limit meters",
     "Loop Dashboard for Claude Code /loop sessions",
+    "In-app diff review that sends line comments back to the agent",
+    "Git worktrees as independent workspaces",
+    "Per-session memo pad",
   ],
   aggregateRating: {
     "@type": "AggregateRating",
@@ -235,12 +299,14 @@ export default function LandingPage() {
               </>
             }
           >
-            <ScrollVideo
-              src="/videos/various-project-main.mp4"
-              alt="CLI Manager - Manage all your CLI agents in one place"
-              className="mx-auto rounded-2xl object-cover h-auto w-full md:h-full object-left-top"
+            <DemoVideoPlayer
+              video={HERO_DEMO_VIDEO}
+              className="mx-auto rounded-2xl object-cover h-auto w-full md:h-full object-left-top bg-[#1b1830]"
             />
           </ContainerScroll>
+          <p className="relative z-10 mt-2 md:mt-16 mb-8 px-4 text-center text-[#605A57] text-xs sm:text-sm font-sans">
+            {HERO_DEMO_VIDEO.caption}
+          </p>
         </div>
 
         {/* Social Proof Section */}
@@ -281,79 +347,42 @@ export default function LandingPage() {
           {/* Feature Section - Dynamic Asymmetric Layout */}
           <div className="self-stretch flex flex-col justify-start items-center overflow-hidden">
             
-            {/* Feature 1 - Multi CLI Agent Management */}
-            <div className="w-full px-4 sm:px-6 md:px-12 py-2 sm:py-4 md:py-6 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4">
-              <div className="w-full md:w-[40%] flex flex-col justify-center items-start gap-2 md:gap-3 z-10">
-                <div className="text-[#37322F] text-4xl sm:text-5xl md:text-6xl font-semibold leading-[1.1] font-serif tracking-tight">
-                  All CLI Agents, One Dashboard
+            {FEATURES.map((feature, index) => (
+              <div
+                key={feature.title}
+                className={`w-full px-4 sm:px-6 md:px-12 py-6 sm:py-8 md:py-10 flex flex-col ${
+                  index % 2 === 1 ? "md:flex-row-reverse" : "md:flex-row"
+                } justify-between items-center gap-4 md:gap-10`}
+              >
+                <div className="w-full md:w-[40%] flex flex-col justify-center items-start gap-2 md:gap-3 z-10">
+                  <div className="text-[#37322F] text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight font-serif tracking-tight">
+                    {feature.title}
+                  </div>
+                  <div className="text-[#605A57] text-base sm:text-lg font-normal leading-7 font-sans">
+                    {feature.description}
+                  </div>
+                  {feature.link && (
+                    <Link
+                      href={feature.link.href}
+                      className="text-[#37322F] hover:text-[#605A57] transition-colors text-sm font-medium mt-2 underline"
+                    >
+                      {feature.link.label}
+                    </Link>
+                  )}
                 </div>
-                <div className="text-[#605A57] text-lg sm:text-xl font-normal leading-8 font-sans">
-                  Claude Code, Codex CLI, Gemini CLI — view and manage them all from a single interface.
-                  <br className="hidden md:block" />
-                  Activate agents, categorize with nicknames, and organize all your projects effortlessly.
-                </div>
-                <Link href="/docs" className="text-[#37322F] hover:text-[#605A57] transition-colors text-sm font-medium mt-2 underline">
-                  Learn more →
-                </Link>
-              </div>
-              <div className="w-full md:w-[60%] relative">
-                <div className="w-full aspect-[16/10] md:aspect-[16/9] bg-[#F5F5F4] rounded-2xl overflow-hidden shadow-2xl border border-[rgba(55,50,47,0.08)] flex items-center justify-center relative group transform md:translate-x-12 transition-transform duration-700 hover:scale-[1.02]">
-                  <ScrollVideo
-                    src="/videos/various-project-main.mp4"
-                    alt="CLI Manager Dashboard - Manage Claude Code, Codex CLI, Gemini CLI"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Feature 2 - Agent Naming for Easy Management */}
-            <div className="w-full px-4 sm:px-6 md:px-12 py-2 sm:py-4 md:py-6 flex flex-col md:flex-row-reverse justify-between items-start gap-2 md:gap-4">
-              <div className="w-full md:w-[40%] flex flex-col justify-center items-start gap-2 md:mt-12">
-                 <div className="text-[#37322F] text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight font-serif">
-                  Name Your Agents, Define Their Roles
-                </div>
-                <div className="text-[#605A57] text-base sm:text-lg font-normal leading-7 font-sans">
-                  Rename each CLI agent to reflect its purpose. Assign roles like &quot;Frontend Dev&quot;, &quot;Backend API&quot;, or &quot;Design Review&quot; — making multi-agent workflows intuitive and organized.
-                </div>
-                <Link href="/gallery" className="text-[#37322F] hover:text-[#605A57] transition-colors text-sm font-medium mt-2 underline">
-                  See examples →
-                </Link>
-              </div>
-              <div className="w-full md:w-[60%] relative">
-                <div className="w-full aspect-[16/9] md:aspect-[21/9] bg-[#F5F5F4] rounded-2xl overflow-hidden shadow-xl border border-[rgba(55,50,47,0.08)] flex items-center justify-center relative group transform md:-translate-x-8 transition-transform duration-700 hover:scale-[1.02]">
-                  <ScrollVideo
-                    src="/videos/changename-main.mp4"
-                    alt="CLI Agent Renaming - Define roles for each agent"
-                    className="w-full h-full object-cover"
-                  />
+                <div className="w-full md:w-[60%] relative">
+                  <div className="w-full aspect-[16/10] bg-[#141418] rounded-2xl overflow-hidden shadow-xl border border-[rgba(55,50,47,0.08)] relative">
+                    <Image
+                      src={feature.image}
+                      alt={feature.alt}
+                      fill
+                      sizes="(min-width: 768px) 60vw, 100vw"
+                      className="object-cover object-left-top"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* Feature 3 - Easy Editor Switching */}
-            <div className="w-full px-4 sm:px-6 md:px-12 py-2 sm:py-4 md:py-6 flex flex-col md:flex-row justify-between items-center gap-2 md:gap-4">
-              <div className="w-full md:w-[40%] flex flex-col justify-center items-start gap-2 md:-mt-8">
-                 <div className="text-[#37322F] text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight font-serif">
-                  Switch Editors Instantly
-                </div>
-                <div className="text-[#605A57] text-base sm:text-lg font-normal leading-7 font-sans">
-                  Jump between Cursor, VS Code, or any editor with a single click. Configure your preferred editor and switch projects seamlessly — no more context switching friction.
-                </div>
-                <Link href="/changelog" className="text-[#37322F] hover:text-[#605A57] transition-colors text-sm font-medium mt-2 underline">
-                  See what's new →
-                </Link>
-              </div>
-              <div className="w-full md:w-[60%] relative">
-                <div className="w-full aspect-[4/3] md:aspect-[5/4] bg-[#F5F5F4] rounded-2xl overflow-hidden shadow-xl border border-[rgba(55,50,47,0.08)] flex items-center justify-center relative group transform md:translate-y-4 transition-transform duration-700 hover:scale-[1.02]">
-                  <ScrollVideo
-                    src="/videos/open-editor-main.mp4"
-                    alt="Editor Settings - Switch between Cursor, VS Code, and more"
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              </div>
-            </div>
+            ))}
 
           </div>
         </div>

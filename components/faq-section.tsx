@@ -21,12 +21,17 @@ export const faqData: FAQItem[] = [
   {
     question: "Is it free to use?",
     answer:
-      "Yes, core features are available for free.",
+      "Yes. CLI Manager is free and open source under the MIT license (since v1.5.0). Download the macOS build or build it from the GitHub repository.",
   },
   {
     question: "Do you support Windows/Linux?",
     answer:
       "Currently, only Mac is supported. Windows is coming soon. Linux is not yet on the roadmap.",
+  },
+  {
+    question: "Can an AI agent control CLI Manager?",
+    answer:
+      "Yes, if you turn it on. The AI Control API (Settings > Agents, off by default) lets Claude Code, Codex or a script open terminal sessions, send prompts and read the screen over a local-only, token-protected connection. It can only touch sessions it opened, and you can disconnect it from any session.",
   },
   {
     question: "Is my data safe?",

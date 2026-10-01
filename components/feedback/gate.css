@@ -1,0 +1,11 @@
+/* 관문 대화상자 — 사이트 토큰(--surface --fg --line --muted --bg)이 없으면 값으로 바꾼다 */
+.fb-gate-backdrop { position: fixed; inset: 0; z-index: 2147483000; background: rgb(10 10 15 / .45); backdrop-filter: blur(3px); display: grid; place-items: center; padding: 16px; }
+.fb-gate { width: min(380px, 100%); background: var(--surface); color: var(--fg); border: 1px solid var(--line); border-radius: 16px; padding: 22px; box-shadow: 0 30px 80px -20px rgb(0 0 0 / .45); }
+.fb-gate h2 { margin: 0 0 6px; font-size: 18px; }
+.fb-gate p { margin: 0 0 14px; color: var(--muted); font-size: 14px; }
+.fb-gate input { width: 100%; height: 42px; border: 1px solid var(--line); border-radius: 10px; padding: 0 12px; background: var(--bg); color: var(--fg); font: inherit; }
+.fb-gate input[aria-invalid='true'] { border-color: #e5484d; }
+.fb-gate .fb-gate-error { color: #e5484d; margin: 8px 0 0; }
+.fb-gate-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.fb-gate-actions button { height: 36px; padding: 0 14px; border-radius: 9px; border: 1px solid var(--line); background: var(--surface); cursor: pointer; }
+.fb-gate-actions .primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }

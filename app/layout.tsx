@@ -4,6 +4,8 @@ import { Inter, Instrument_Serif } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { GoogleAnalytics } from "@/components/google-analytics"
 import { SITE_URL } from "@/lib/site"
+import FeedbackGate from "@/components/feedback/FeedbackGate"
+import "@/components/feedback/gate.css"
 import "./globals.css"
 
 const inter = Inter({
@@ -115,6 +117,8 @@ export default function RootLayout({
         {children}
         <Analytics />
         <GoogleAnalytics />
+        {/* 피드백 위젯 — 부착 타입 dev+url: localhost 는 바로, 운영은 ?feedback + 비밀번호 */}
+        <FeedbackGate locale="en" />
       </body>
     </html>
   )

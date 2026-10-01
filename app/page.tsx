@@ -21,6 +21,10 @@ const DOWNLOAD_URLS = {
   x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.12.1-x64.dmg",
 }
 
+// 드롭다운에 보여 줄 버전 — URL 에서 뽑는다. 릴리즈 스크립트(CLImanger/scripts/post-release.cjs)는
+// URL 의 `cli-manager-<버전>-` 문자열만 바꾸므로, 버전을 따로 적어 두면 그 갱신에서 빠진다.
+const DOWNLOAD_VERSION = /cli-manager-(\d+\.\d+\.\d+)-/.exec(DOWNLOAD_URLS.arm64)?.[1] ?? ""
+
 // 홈 기능 섹션. 스크린샷은 데모 인스턴스(가짜 프로젝트·별도 프로필)에서 v1.10.0 으로 찍었다 — 개인 경로·계정이 없다.
 // 새로 찍을 때도 같은 방식으로(사용자 앱에서 찍지 않는다).
 interface HomeFeature {
@@ -171,12 +175,17 @@ export default function LandingPage() {
                 }
                 text="macOS Desktop App"
               />
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[rgba(55,50,47,0.06)] border border-[rgba(55,50,47,0.1)]">
+              <a
+                href="https://github.com/woorichicken/CLI_manager"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[rgba(55,50,47,0.06)] border border-[rgba(55,50,47,0.1)] hover:bg-[rgba(55,50,47,0.1)] hover:border-[rgba(55,50,47,0.2)] transition-colors"
+              >
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" className="text-[#37322F] opacity-60">
                   <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
                 </svg>
                 <span className="text-xs font-medium text-[rgba(55,50,47,0.65)] font-sans">Open Source</span>
-              </div>
+              </a>
             </div>
             <h1 className="w-full max-w-[748.71px] lg:w-[748.71px] text-center flex justify-center flex-col text-[#37322F] text-[24px] xs:text-[28px] sm:text-[36px] md:text-[52px] lg:text-[80px] font-normal leading-[1.1] sm:leading-[1.15] md:leading-[1.2] lg:leading-24 font-serif px-2 sm:px-4 md:px-0 relative">
               Your CLI Agents,
@@ -232,6 +241,11 @@ export default function LandingPage() {
                   onClick={() => setIsDownloadOpen(false)}
                 />
                 <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-56 bg-white rounded-xl shadow-lg border border-[rgba(55,50,47,0.12)] overflow-hidden z-50 py-1">
+                  {DOWNLOAD_VERSION && (
+                    <div className="px-4 pt-2 pb-1 text-[11px] font-medium text-[rgba(55,50,47,0.55)] font-sans">
+                      Latest · v{DOWNLOAD_VERSION}
+                    </div>
+                  )}
                   <a
                     href={DOWNLOAD_URLS.arm64}
                     download
@@ -301,7 +315,7 @@ export default function LandingPage() {
           >
             <DemoVideoPlayer
               video={HERO_DEMO_VIDEO}
-              className="mx-auto rounded-2xl object-cover h-auto w-full md:h-full object-left-top bg-[#1b1830]"
+              className="mx-auto rounded-2xl object-contain h-auto w-full md:h-full bg-gradient-to-b from-[#1c2241] to-[#382851]"
             />
           </ContainerScroll>
           <p className="relative z-10 mt-2 md:mt-16 mb-8 px-4 text-center text-[#605A57] text-xs sm:text-sm font-sans">

@@ -9,6 +9,10 @@ const DOWNLOAD_URLS = {
   x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.12.1-x64.dmg",
 }
 
+// 드롭다운에 보여 줄 버전 — URL 에서 뽑는다. 릴리즈 스크립트(CLImanger/scripts/post-release.cjs)는
+// URL 의 `cli-manager-<버전>-` 문자열만 바꾸므로, 버전을 따로 적어 두면 그 갱신에서 빠진다.
+const DOWNLOAD_VERSION = /cli-manager-(\d+\.\d+\.\d+)-/.exec(DOWNLOAD_URLS.arm64)?.[1] ?? ""
+
 // 네비게이션 메뉴 데이터
 const NAV_MENUS = {
   resources: {
@@ -169,6 +173,11 @@ export function SiteHeader() {
                   onClick={() => setIsDownloadOpen(false)}
                 />
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-[rgba(55,50,47,0.12)] overflow-hidden z-50 py-1">
+                  {DOWNLOAD_VERSION && (
+                    <div className="px-4 pt-2 pb-1 text-[11px] font-medium text-[rgba(55,50,47,0.55)] font-sans">
+                      Latest · v{DOWNLOAD_VERSION}
+                    </div>
+                  )}
                   <a
                     href={DOWNLOAD_URLS.arm64}
                     download
@@ -285,7 +294,7 @@ export function SiteHeader() {
 
         {/* 사이드바 하단 - Download */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[rgba(55,50,47,0.12)] bg-[#F7F5F3]">
-          <p className="px-4 text-xs font-semibold text-[rgba(49,45,43,0.50)] uppercase tracking-wider mb-2">Download</p>
+          <p className="px-4 text-xs font-semibold text-[rgba(49,45,43,0.50)] uppercase tracking-wider mb-2">Download{DOWNLOAD_VERSION && <span className="normal-case"> · v{DOWNLOAD_VERSION}</span>}</p>
           <a
             href={DOWNLOAD_URLS.arm64}
             download

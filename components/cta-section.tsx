@@ -8,6 +8,10 @@ const DOWNLOAD_URLS = {
   x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.12.1-x64.dmg",
 }
 
+// 드롭다운에 보여 줄 버전 — URL 에서 뽑는다. 릴리즈 스크립트(CLImanger/scripts/post-release.cjs)는
+// URL 의 `cli-manager-<버전>-` 문자열만 바꾸므로, 버전을 따로 적어 두면 그 갱신에서 빠진다.
+const DOWNLOAD_VERSION = /cli-manager-(\d+\.\d+\.\d+)-/.exec(DOWNLOAD_URLS.arm64)?.[1] ?? ""
+
 export default function CTASection() {
   const [isDownloadOpen, setIsDownloadOpen] = useState(false)
 
@@ -75,6 +79,11 @@ export default function CTASection() {
                     onClick={() => setIsDownloadOpen(false)}
                   />
                   <div className="absolute left-1/2 -translate-x-1/2 bottom-full mb-2 w-56 bg-white rounded-xl shadow-lg border border-[rgba(55,50,47,0.12)] overflow-hidden z-50 py-1">
+                    {DOWNLOAD_VERSION && (
+                      <div className="px-4 pt-2 pb-1 text-[11px] font-medium text-[rgba(55,50,47,0.55)] font-sans">
+                        Latest · v{DOWNLOAD_VERSION}
+                      </div>
+                    )}
                     <a
                       href={DOWNLOAD_URLS.arm64}
                       download
@@ -113,7 +122,7 @@ export default function CTASection() {
                 href="https://github.com/woorichicken/CLI_manager"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex justify-center items-center gap-1.5 px-4 py-2.5 rounded-full border border-[rgba(255,255,255,0.25)] text-white hover:bg-[rgba(255,255,255,0.1)] transition-all duration-200"
+                className="flex justify-center items-center gap-1.5 px-4 py-2.5 rounded-full border border-[rgba(55,50,47,0.2)] bg-white/70 text-[#37322F] hover:bg-[rgba(55,50,47,0.05)] transition-all duration-200"
               >
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />

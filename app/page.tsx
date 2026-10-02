@@ -6,6 +6,7 @@ import { ContainerScroll } from "../components/ui/container-scroll-animation"
 import CTASection from "../components/cta-section"
 import { PageWrapper } from "../components/page-wrapper"
 import { DemoVideoPlayer } from "../components/demo-video"
+import { AgentSkillCard } from "../components/agent-skill-card"
 import Link from "next/link"
 import Image from "next/image"
 import Script from "next/script"
@@ -33,6 +34,8 @@ interface HomeFeature {
   image: string
   alt: string
   link?: { href: string; label: string }
+  /** 제목 위 작은 배지 — 아직 다듬는 중인 기능 표시(예: "Beta") */
+  badge?: string
 }
 
 const FEATURES: HomeFeature[] = [
@@ -66,6 +69,7 @@ const FEATURES: HomeFeature[] = [
     image: "/screenshots/settings-agents-lower.webp",
     alt: "Agents settings with official hook integration and usage alert thresholds for Claude Code and Codex",
     link: { href: "/changelog", label: "See what's new →" },
+    badge: "Beta",
   },
   {
     title: "Worktrees and Git, Built In",
@@ -321,6 +325,7 @@ export default function LandingPage() {
           <p className="relative z-10 mt-2 md:mt-16 mb-8 px-4 text-center text-[#605A57] text-xs sm:text-sm font-sans">
             {HERO_DEMO_VIDEO.caption}
           </p>
+          <AgentSkillCard />
         </div>
 
         {/* Social Proof Section */}
@@ -369,6 +374,11 @@ export default function LandingPage() {
                 } justify-between items-center gap-4 md:gap-10`}
               >
                 <div className="w-full md:w-[40%] flex flex-col justify-center items-start gap-2 md:gap-3 z-10">
+                  {feature.badge && (
+                    <span className="px-2.5 py-0.5 rounded-full border border-[rgba(55,50,47,0.15)] bg-[rgba(55,50,47,0.06)] text-[#37322F] text-xs font-medium font-sans uppercase tracking-wider">
+                      {feature.badge}
+                    </span>
+                  )}
                   <div className="text-[#37322F] text-3xl sm:text-4xl md:text-5xl font-semibold leading-tight font-serif tracking-tight">
                     {feature.title}
                   </div>

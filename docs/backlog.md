@@ -10,12 +10,9 @@
 - **트리거**: 다운로드 메뉴를 한 번 더 고치게 될 때, 또는 Windows/Linux 빌드가 추가될 때.
 - **안**: `lib/download.ts` 하나로 모으고 `SITE_LINK_FILES` 를 그 파일 하나로 줄인다(두 저장소 동시 변경).
 
-## 원격 주소가 옛 소유자를 가리킨다 (2026-10-02)
+## ~~원격 주소가 옛 소유자를 가리킨다~~ — 해결 (2026-10-02)
 
-- **근거**: `git remote -v` 가 `agi040922/solhun-web-page`, 실제 PR·배포는 `woorichicken/solhun-web-page`
-  (GitHub 리다이렉트로 동작). 그래서 `close-feedback.mjs` 가 제보 코멘트에 옛 주소 커밋 URL 을 남긴다.
-- **트리거**: 리다이렉트가 끊기거나 저장소 이름을 다시 바꿀 때.
-- **안**: `git remote set-url origin https://github.com/woorichicken/solhun-web-page.git`.
+- `origin` 을 `https://github.com/woorichicken/solhun-web-page.git` 로 바꿨다(fetch 확인). 이후 제보 코멘트의 커밋 URL 도 새 주소로 나간다.
 
 ## 자동 검증이 타입체크·빌드뿐이다 (2026-10-02)
 

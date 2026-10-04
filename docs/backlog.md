@@ -8,6 +8,8 @@
   `CLImanger/scripts/post-release.cjs` 의 `insertChangelog` 는 노트 JSON 을 그대로 INSERT 하고 언어를 보지 않는다.
 - **트리거**: 다음 릴리즈 전, 또는 같은 제보가 다시 올 때.
 - **안**: `insertChangelog` 에서 title·description·items 에 한글(U+AC00–D7A3)이 있으면 `fail` — 두 저장소 중 CLImanger 쪽 변경.
+- **경과**: v1.12.2(2026-10-03)도 한국어로 들어와 재발 확인. v1.12.1(id 45)·v1.12.2(id 46) 두 행을 영어로 UPDATE 했다
+  (2026-10-03·04, 사용자 승인, 바꾸기 전 행은 `_review-solhun-web-fb-1003/backup-changelog-v1.12.{1,2}.json`). 한글 남은 행 0.
 
 ## 홈 「Recently shipped」 가 v1.10.0 에 멈춰 있다 (2026-10-03)
 

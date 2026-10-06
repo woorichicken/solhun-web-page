@@ -20,8 +20,8 @@ import { Maximize2 } from "lucide-react"
 
 // 다운로드 URL
 const DOWNLOAD_URLS = {
-  arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.12.2-arm64.dmg",
-  x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.12.2-x64.dmg",
+  arm64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.12.3-arm64.dmg",
+  x64: "https://pub-dc249db286af4c1991fedf690157891d.r2.dev/cli-manager-1.12.3-x64.dmg",
 }
 
 // 드롭다운에 보여 줄 버전 — URL 에서 뽑는다. 릴리즈 스크립트(CLImanger/scripts/post-release.cjs)는

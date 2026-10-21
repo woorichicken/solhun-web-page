@@ -1,8 +1,10 @@
 "use client"
 
+import Link from "next/link"
 import { useState } from "react"
 
 // 공유용 에이전트 스킬 — 설치 명령은 저장소 README 의 것을 그대로 쓴다(README 가 바뀌면 같이 바꾼다).
+const API_GUIDE_PATH = "/docs/ai-control-api"
 const SKILL_REPO_URL = "https://github.com/woorichicken/climanager-session"
 const SKILL_INSTALL_COMMAND = "npx skills add woorichicken/climanager-session@climanager-session"
 // 「복사됨」 표시를 되돌리기까지의 시간
@@ -62,13 +64,20 @@ export function AgentSkillCard() {
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm font-sans text-[#605A57]">
           <span>Needs CLI Manager v1.10+ with Settings › Agents › AI Control API on.</span>
+          {/* 가이드는 사이트 안에 있다 — GitHub README 만 가리키면 「API 가이드가 필요하다」는 제보가 나온다(127fd659) */}
+          <Link
+            href={API_GUIDE_PATH}
+            className="text-[#37322F] font-medium underline hover:text-[#605A57] transition-colors"
+          >
+            Read the AI Control API guide →
+          </Link>
           <a
             href={SKILL_REPO_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="text-[#37322F] font-medium underline hover:text-[#605A57] transition-colors"
           >
-            Setup guide on GitHub →
+            Skill on GitHub →
           </a>
         </div>
       </div>

@@ -1,6 +1,8 @@
 // 홈의 "Recently shipped" 섹션과 /llms.txt 가 같이 쓰는 최근 릴리즈 요약.
-// 전체 기록은 /changelog(DB changelogs 테이블)가 정본이고, 여기는 사이트 방문자에게 보여줄
-// 굵직한 변화만 영어로 추린 것이다. 새 마이너 버전이 나오면 맨 앞에 한 줄 추가한다.
+// 예전엔 손으로 적는 정적 목록이었고 v1.10.0 에서 멈춰 있었다(운영은 v1.36.0) — 지금은 /changelog 와 같은
+// DB changelogs 테이블에서 읽는다. 릴리즈 스크립트가 changelog 행을 넣으면 따로 손댈 곳이 없다.
+import { desc } from "drizzle-orm"
+import { db, changelogs, type Changelog } from "@/lib/db"
 
 export interface ReleaseHighlight {
   version: string
@@ -9,48 +11,58 @@ export interface ReleaseHighlight {
   summary: string
 }
 
-// 기준: CLImanger 저장소 태그 v1.6.0 ~ v1.10.0 + changelogs 테이블(id 25~30), 2026-09-29 확인
-export const RECENT_RELEASES: ReleaseHighlight[] = [
-  {
-    version: "v1.10.0",
-    date: "Sep 29, 2026",
-    title: "Sidebar folder ordering & steadier AI sessions",
-    summary:
-      "Drag sidebar folders into any order (kept across restarts). The AI Control API can now read session memos, and prompts no longer get lost under heavy load or right after Esc.",
-  },
-  {
-    version: "v1.9.1",
-    date: "Sep 25, 2026",
-    title: "Session resume & focus fixes",
-    summary:
-      "Sessions launched from shell aliases or templates resume the same conversation after a restart, and the AI no longer steals your keyboard focus when it shows a session.",
-  },
-  {
-    version: "v1.9.0",
-    date: "Sep 23, 2026",
-    title: "AI Control API",
-    summary:
-      "Let an AI open terminal sessions inside CLI Manager, run templates, send prompts and read results — in ordinary terminals you can watch and take over. Off by default, localhost-only, token required.",
-  },
-  {
-    version: "v1.8.0",
-    date: "Sep 12, 2026",
-    title: "Worktree toggle & link fixes",
-    summary:
-      "Hide worktrees entirely from Settings, turn terminal file links off, and open file paths only on ⌘-click. Reloading worktrees no longer wipes terminal scrollback.",
-  },
-  {
-    version: "v1.7.0",
-    date: "Aug 17, 2026",
-    title: "Official agent hooks",
-    summary:
-      "Session status comes from Claude Code and Codex hook events instead of guessing from terminal output — plus usage-limit meters and an in-app diff review that sends line comments back to the agent.",
-  },
-  {
-    version: "v1.6.0",
-    date: "Jun 23, 2026",
-    title: "Loop Dashboard",
-    summary:
-      "A dedicated window to watch Claude Code /loop sessions per project: iteration count, status and timing at a glance.",
-  },
-]
+// 홈 카드 최대 6장 = 2열 3줄(예전 정적 목록과 같은 높이).
+export const RECENT_RELEASE_COUNT = 6
+// 최근 릴리즈 몇 개 안에서만 고른다. 건너뛴 행이 많을 때 몇 주 전 버전이 「최근」 카드로 끌려 올라오지 않게 —
+// 그럴 땐 카드가 6장보다 적게 나온다.
+const FETCH_WINDOW = 12
+
+// 영어 사이트다. 릴리즈 노트가 한국어로 들어간 행이 있다(2026-11-22 기준 66건 중 20건, v1.15.0~v1.32.0 —
+// docs/backlog.md 「changelog 노트 언어」). 홈에는 영어 행만 싣는다.
+const HANGUL = /[\uAC00-\uD7A3]/
+
+// 일부 행은 제목 앞에 버전을 다시 적었다("v1.34.0 — Autocron, …"). 카드에 버전 알약이 따로 있어 중복이다.
+const LEADING_VERSION = /^v?\d+\.\d+\.\d+\s*[—–:-]\s*/
+
+export function toReleaseHighlight(row: Pick<Changelog, "version" | "date" | "title" | "description">): ReleaseHighlight {
+  return {
+    version: row.version.startsWith("v") ? row.version : `v${row.version}`,
+    date: row.date,
+    title: row.title.replace(LEADING_VERSION, ""),
+    summary: row.description,
+  }
+}
+
+// 새 기능이 있는 영어 릴리즈만 최신순으로 count 개. rows 는 createdAt 내림차순이어야 한다.
+// 고치기만 한 패치(예: v1.35.1)는 홈에 쓸 이야기가 없어 건너뛴다.
+export function pickRecentReleases(
+  rows: Pick<Changelog, "version" | "date" | "title" | "description" | "improvements">[],
+  count = RECENT_RELEASE_COUNT,
+): ReleaseHighlight[] {
+  return rows
+    .filter((row) => (row.improvements?.length ?? 0) > 0)
+    .filter((row) => !HANGUL.test(`${row.title} ${row.description}`))
+    .slice(0, count)
+    .map(toReleaseHighlight)
+}
+
+// DB 가 안 되면 빈 목록 — 홈은 카드 없이 「Full changelog」 링크만 보여 준다(옛 버전을 최신처럼 보이지 않게).
+export async function getRecentReleases(count = RECENT_RELEASE_COUNT): Promise<ReleaseHighlight[]> {
+  try {
+    const rows = await db
+      .select({
+        version: changelogs.version,
+        date: changelogs.date,
+        title: changelogs.title,
+        description: changelogs.description,
+        improvements: changelogs.improvements,
+      })
+      .from(changelogs)
+      .orderBy(desc(changelogs.createdAt))
+      .limit(FETCH_WINDOW)
+    return pickRecentReleases(rows, count)
+  } catch (error) {
+    console.error("Failed to fetch recent releases:", error)
+    return []
+  }
+}

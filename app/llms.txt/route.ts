@@ -35,7 +35,7 @@ ${recent}
 ## Documentation
 
 - [Getting Started](${SITE_URL}/docs): Installation guide and initial setup instructions
-- [AI Control API guide](${SITE_URL}/docs/ai-control-api): Setup, MCP tools, REST endpoints, session states and safety rules
+- [AI Control API guide](${SITE_URL}/docs/ai-control-api): Setup, MCP tools, REST endpoints, session states, folders, inbox, checklists, autocron and safety rules
 
 ## Resources
 

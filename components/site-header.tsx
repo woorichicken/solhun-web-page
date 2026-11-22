@@ -13,12 +13,16 @@ const DOWNLOAD_URLS = {
 // URL 의 `cli-manager-<버전>-` 문자열만 바꾸므로, 버전을 따로 적어 두면 그 갱신에서 빠진다.
 const DOWNLOAD_VERSION = /cli-manager-(\d+\.\d+\.\d+)-/.exec(DOWNLOAD_URLS.arm64)?.[1] ?? ""
 
+// 에이전트가 앱을 조종하는 API 가이드 — 헤더 맨 위(넓은 화면)와 Resources 메뉴(좁은 화면·모바일) 두 곳에서 연다(제보 3ee2d0ba)
+const API_DOCS_HREF = "/docs/ai-control-api"
+
 // 네비게이션 메뉴 데이터
 const NAV_MENUS = {
   resources: {
     label: "Resources",
     items: [
       { href: "/docs", label: "Docs" },
+      { href: API_DOCS_HREF, label: "AI Control API" },
       { href: "/gallery", label: "Gallery" },
       { href: "/changelog", label: "Changelog" },
     ],
@@ -125,6 +129,15 @@ export function SiteHeader() {
                   )}
                 </div>
               ))}
+
+              {/* API Docs — 드롭다운 없이 바로 가는 링크. 640~1023px 에서는 헤더 알약이 이미 꽉 차서(Download 가 잘림)
+                  1024px 이상에서만 보이고, 그 아래 폭에서는 Resources 메뉴의 같은 링크로 간다 */}
+              <Link
+                href={API_DOCS_HREF}
+                className="hidden lg:flex items-center px-3 py-2 rounded-full hover:bg-[rgba(55,50,47,0.05)] transition-all duration-200 text-[rgba(49,45,43,0.80)] text-xs md:text-[13px] font-medium leading-[14px] font-sans"
+              >
+                API Docs
+              </Link>
             </div>
           </div>
 
@@ -271,9 +284,9 @@ export function SiteHeader() {
                 </svg>
               </button>
 
-              {/* 확장된 하위 메뉴 */}
+              {/* 확장된 하위 메뉴 — 항목 4개(Resources)가 다 보이도록 max-h-60. max-h-40 이면 네 번째가 잘린다 */}
               <div
-                className={`overflow-hidden transition-all duration-200 ${mobileExpandedMenu === menuKey ? 'max-h-40 opacity-100' : 'max-h-0 opacity-0'}`}
+                className={`overflow-hidden transition-all duration-200 ${mobileExpandedMenu === menuKey ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0'}`}
               >
                 <div className="pl-4 py-1 flex flex-col gap-1">
                   {NAV_MENUS[menuKey].items.map((item) => (

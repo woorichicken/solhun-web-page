@@ -1,5 +1,7 @@
 import Link from "next/link"
 
+const PORTFOLIO_URL = "https://solhun.com"
+
 export default function FooterSection() {
   return (
     <div className="w-full pt-10 flex flex-col justify-start items-start">
@@ -38,6 +40,17 @@ export default function FooterSection() {
                 </svg>
               </div>
               <span className="text-[#49423D] text-sm font-medium font-sans group-hover:text-[#37322F] transition-colors">@aisolutiondev</span>
+            </a>
+
+            {/* Portfolio — 만든 사람의 포트폴리오 사이트(제보 c3c7d5a2). 사이트 안에 새 페이지를 만들지 않고 이미 있는 solhun.com 으로 보낸다 */}
+            <a href={PORTFOLIO_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 group cursor-pointer">
+              <div className="w-5 h-5 relative flex items-center justify-center">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#49423D" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:stroke-[#37322F] transition-colors" aria-hidden="true">
+                  <rect x="3" y="7" width="18" height="13" rx="2" />
+                  <path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                </svg>
+              </div>
+              <span className="text-[#49423D] text-sm font-medium font-sans group-hover:text-[#37322F] transition-colors">Portfolio · solhun.com</span>
             </a>
           </div>
         </div>
@@ -79,6 +92,10 @@ export default function FooterSection() {
             <div className="flex flex-col justify-center items-center gap-2">
               <Link href="/docs" className="self-stretch text-[#49423D] text-sm font-normal leading-5 font-sans cursor-pointer hover:text-[#37322F] transition-colors">
                 Documentation
+              </Link>
+              {/* 에이전트용 API 가이드(제보 db019a26) */}
+              <Link href="/docs/ai-control-api" className="self-stretch text-[#49423D] text-sm font-normal leading-5 font-sans cursor-pointer hover:text-[#37322F] transition-colors">
+                AI Control API
               </Link>
               <Link href="/feedback" className="self-stretch text-[#49423D] text-sm font-normal leading-5 font-sans cursor-pointer hover:text-[#37322F] transition-colors">
                 Feedback

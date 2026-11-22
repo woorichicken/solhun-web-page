@@ -18,8 +18,8 @@ import { HERO_DEMO_VIDEO } from "../lib/demo-video"
 import { ImageGallery } from "../components/image-gallery"
 import { Maximize2 } from "lucide-react"
 
-// 홈 기능 섹션. 스크린샷은 데모 인스턴스(가짜 프로젝트·별도 프로필)에서 v1.10.0 으로 찍었다 — 개인 경로·계정이 없다.
-// 새로 찍을 때도 같은 방식으로(사용자 앱에서 찍지 않는다).
+// 홈 기능 섹션. 스크린샷은 데모 인스턴스(가짜 프로젝트·별도 프로필)에서 v1.36.0 으로 찍었다 — 개인 경로·계정이 없다.
+// 새로 찍을 때도 같은 방식으로: scripts/app-screenshots/shots.mjs (사용자 앱에서 찍지 않는다).
 interface HomeFeature {
   title: string
   description: string

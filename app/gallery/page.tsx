@@ -6,7 +6,7 @@ import { ProductList, Product } from "../../components/product-list"
 import { ImageGallery } from "../../components/image-gallery"
 import { Bot, FlaskConical, GitBranch, GitCompare, Github, Network, StickyNote, Terminal } from "lucide-react"
 
-// 스틸 이미지는 데모 인스턴스(가짜 프로젝트)에서 찍은 v1.10.0 화면(public/screenshots)으로 바꿨다.
+// 스틸 이미지는 데모 인스턴스(가짜 프로젝트)에서 찍은 v1.36.0 화면(public/screenshots)으로 바꿨다.
 // 옛 전체 화면 캡처(worktree-*.png·main-*.png 등)는 개인 경로·실제 프로젝트명이 보여 뺐다.
 // 옛 녹화 영상(.mp4)은 개인 경로·실제 프로젝트명이 찍혀 있어 뺐다(2026-09-30). 데모 인스턴스로 다시 찍으면 첫 번째 자리에 넣는다.
 const products = [

@@ -46,7 +46,10 @@ export function pickRecentReleases(
     .map(toReleaseHighlight)
 }
 
-// DB 가 안 되면 빈 목록 — 홈은 카드 없이 「Full changelog」 링크만 보여 준다(옛 버전을 최신처럼 보이지 않게).
+// DB 가 안 되면: 빌드 중에는 빈 목록(카드 없이 「Full changelog」 링크만 — 빌드를 막지 않는다),
+// 배포 뒤 1시간마다 다시 만들 때는 던진다 — Next 가 직전에 잘 만든 페이지를 그대로 둔다(빈 목록을 1시간 캐시하지 않게).
+const IS_BUILD = process.env.NEXT_PHASE === "phase-production-build"
+
 export async function getRecentReleases(count = RECENT_RELEASE_COUNT): Promise<ReleaseHighlight[]> {
   try {
     const rows = await db
@@ -63,6 +66,7 @@ export async function getRecentReleases(count = RECENT_RELEASE_COUNT): Promise<R
     return pickRecentReleases(rows, count)
   } catch (error) {
     console.error("Failed to fetch recent releases:", error)
-    return []
+    if (IS_BUILD) return []
+    throw error
   }
 }

@@ -449,7 +449,7 @@ export default function LandingPage({
             <ol className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4">
               {recentReleases.map((release) => (
                 <li
-                  key={release.version}
+                  key={`${release.version}-${release.date}`}
                   className="bg-white rounded-lg border border-[rgba(55,50,47,0.12)] p-5 flex flex-col gap-2"
                 >
                   <div className="flex items-center gap-2 text-xs font-medium font-sans text-[#605A57]">

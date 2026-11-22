@@ -152,14 +152,18 @@ curl -s "\${H[@]}" -X DELETE "$URL/v1/sessions/$ID"                      # close
 const CLIM_EXAMPLE = `node clim.mjs doctor                  # is the API on? (run this first)
 node clim.mjs templates               # what can I run?
 
-node clim.mjs open ~/code/my-project --template claude-code \\
-     --name "AI: fix failing test" --prompt "fix the failing test"
-node clim.mjs wait last --timeout 300          # wait, then print the screen
-node clim.mjs send last "now commit it" --wait 300
-node clim.mjs read last --tail --lines 120     # include scrollback
-node clim.mjs send last --keys down,enter      # answer a menu with keys
-node clim.mjs release last                     # hand it to the user (keeps running)
-node clim.mjs close last                       # kill it when you are done`
+# Keep the id from open --json and use it for every later call
+ID=$(node clim.mjs open ~/code/my-project --template claude-code \\
+     --name "AI: fix failing test" --prompt "fix the failing test" --json \\
+     | node -pe 'JSON.parse(require("fs").readFileSync(0,"utf8")).session.id')
+
+node clim.mjs wait "$ID" --timeout 300           # wait until idle, then print the screen
+node clim.mjs send "$ID" "now commit it" --wait 300
+node clim.mjs send "$ID" --file ./brief.md       # long instructions: send a file
+node clim.mjs read "$ID" --tail --lines 120      # include scrollback
+node clim.mjs send "$ID" --keys down,enter       # answer a menu with keys
+node clim.mjs release "$ID"                      # hand it to the user (keeps running)
+node clim.mjs close "$ID"                        # kill it when you are done`
 
 const CALLER_HEADER_EXAMPLE = `# Inside a CLI Manager terminal every process has its own session id
 curl -s "\${H[@]}" -H "X-Caller-Session: $CLIMANAGER_SESSION_ID" ...
@@ -320,8 +324,9 @@ export default function AiControlApiPage() {
             </P>
             <CodeBlock>{CLIM_EXAMPLE}</CodeBlock>
             <P>
-              A session can be named by <Code>last</Code>, the first few characters of its id, or part of its name. The
-              script reads the discovery file (or <Code>CLIM_URL</Code> and <Code>CLIM_TOKEN</Code>) and reports the result
+              A session can be named by its id (or the first few characters), part of its name, or <Code>last</Code> — but{" "}
+              <Code>last</Code> is the session connected most recently, which can be another agent&apos;s, so keep the id
+              from <Code>open --json</Code>. The script reads the discovery file (or <Code>CLIM_URL</Code> and <Code>CLIM_TOKEN</Code>) and reports the result
               as an exit code, so the agent never has to parse prose:
             </P>
             <Table

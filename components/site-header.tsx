@@ -134,7 +134,7 @@ export function SiteHeader() {
                   1024px 이상에서만 보이고, 그 아래 폭에서는 Resources 메뉴의 같은 링크로 간다 */}
               <Link
                 href={API_DOCS_HREF}
-                className="hidden lg:flex items-center px-3 py-2 rounded-full hover:bg-[rgba(55,50,47,0.05)] transition-all duration-200 text-[rgba(49,45,43,0.80)] text-xs md:text-[13px] font-medium leading-[14px] font-sans"
+                className="hidden lg:flex items-center whitespace-nowrap px-3 py-2 rounded-full hover:bg-[rgba(55,50,47,0.05)] transition-all duration-200 text-[rgba(49,45,43,0.80)] text-xs md:text-[13px] font-medium leading-[14px] font-sans"
               >
                 API Docs
               </Link>

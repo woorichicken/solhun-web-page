@@ -20,7 +20,7 @@ export default function DocumentationSection() {
   const [activeCard, setActiveCard] = useState(0)
   const [animationKey, setAnimationKey] = useState(0)
 
-  // 스크린샷: 데모 인스턴스에서 찍은 v1.10.0 화면(public/screenshots) — 개인 경로·계정 없음
+  // 스크린샷: 데모 인스턴스에서 찍은 v1.36.0 화면(public/screenshots, scripts/app-screenshots) — 개인 경로·계정 없음
   const cards = [
     {
       title: "Run Every Agent Side by Side",

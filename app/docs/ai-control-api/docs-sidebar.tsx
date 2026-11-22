@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState, type CSSProperties } from "react"
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from "react"
 
 // AI Control API 가이드의 목차 — 넓은 화면은 왼쪽 사이드바, 좁은 화면은 접히는 「On this page」(제보 b2bbf880 · fa37d162).
 // 큰 기능 묶음(group) 아래에 세부 절(item)이 오는 2단 구조다.
@@ -70,6 +70,9 @@ function useActiveSection(ids: string[]) {
         const el = document.getElementById(id)
         if (el && el.getBoundingClientRect().top <= ACTIVE_LINE_PX) current = id
       }
+      // 맨 아래까지 내렸으면 마지막 절 — 짧은 마지막 절은 기준선에 닿기 전에 페이지가 끝난다
+      const atPageEnd = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2
+      if (atPageEnd && ids.length) current = ids[ids.length - 1]
       setActiveId(current)
     }
     const onScroll = () => {
@@ -87,8 +90,13 @@ function useActiveSection(ids: string[]) {
   return activeId
 }
 
+function useSectionIds(groups: DocsNavGroup[]) {
+  // 렌더마다 새 배열을 만들면 스크롤 구독 effect 가 매번 다시 걸린다
+  return useMemo(() => groups.flatMap((group) => group.items.map((item) => item.id)), [groups])
+}
+
 export function DocsSidebar({ groups }: { groups: DocsNavGroup[] }) {
-  const ids = groups.flatMap((group) => group.items.map((item) => item.id))
+  const ids = useSectionIds(groups)
   const activeId = useActiveSection(ids)
   const asideRef = useRef<HTMLElement>(null)
   const navRef = useRef<HTMLDivElement>(null)
@@ -150,14 +158,16 @@ export function DocsSidebar({ groups }: { groups: DocsNavGroup[] }) {
         className="relative pt-8 pb-6 max-h-[calc(100vh-112px)] overflow-y-auto pr-2"
         data-sticky={sticky.mode}
       >
-        <NavList groups={groups} activeId={activeId} />
+        <nav aria-label="On this page">
+          <NavList groups={groups} activeId={activeId} />
+        </nav>
       </div>
     </aside>
   )
 }
 
 export function DocsMobileToc({ groups }: { groups: DocsNavGroup[] }) {
-  const ids = groups.flatMap((group) => group.items.map((item) => item.id))
+  const ids = useSectionIds(groups)
   const activeId = useActiveSection(ids)
   const detailsRef = useRef<HTMLDetailsElement>(null)
   // 항목을 누르면 목차를 접는다 — 펼친 채로 두면 이동한 절을 목록이 가린다
@@ -171,9 +181,9 @@ export function DocsMobileToc({ groups }: { groups: DocsNavGroup[] }) {
       data-testid="docs-toc-mobile"
     >
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium text-[#37322F] font-sans">On this page</summary>
-      <div className="px-4 pb-4">
+      <nav aria-label="On this page" className="px-4 pb-4">
         <NavList groups={groups} activeId={activeId} onPick={close} />
-      </div>
+      </nav>
     </details>
   )
 }

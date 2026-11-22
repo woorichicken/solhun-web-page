@@ -2,6 +2,21 @@
 
 지금 고치지 않고 근거·트리거와 함께 적어 둔다. 고칠 때 이 줄을 지운다.
 
+## 헤더 알약이 640~1023px 에서 넘친다 — Download 가 잘린다 (2026-11-22, fb-1122)
+
+- **근거**: 운영 climanager.solhun.com 캡처(640·768px)에서 헤더 알약 오른쪽 Download 버튼이 알약 밖으로 잘려 있다
+  (`_batches/fb-1122/review/solhun-web-page/before/header-640.png`·`header-768.png`). 알약 폭이 `lg` 아래에서 화면 폭 기준이고,
+  로고 + 메뉴 3개 + GitHub + Download 가 그 폭보다 넓다. PR #13 은 이 구간에서 최상단 「API Docs」를 숨겨 더 나빠지지 않게만 했다.
+- **트리거**: 헤더에 항목을 하나 더 넣을 때, 또는 태블릿 폭 제보가 올 때.
+- **안**: `sm`~`md` 에서 GitHub 버튼을 아이콘만, 또는 메뉴 간격(`px-3`)을 줄인다. 640·768·1024 캡처로 확인.
+
+## AI Control API 가이드는 앱 계약을 손으로 따라간다 (2026-11-22, fb-1122)
+
+- **근거**: `/docs/ai-control-api` 는 v1.11 기준에서 v1.36 까지 손으로 안 고쳐져 절 10개·엔드포인트 20여 개가 빠져 있었다(PR #14 에서 채움).
+  `scripts/check-control-api-endpoints.mjs <CLImanger docs/architecture/control-api.md>` 가 method·path 집합만 센다 — 상세 문구는 안 본다. CI 가 없어 아무도 안 돌린다.
+- **트리거**: CLImanger 릴리즈에서 control-api.md 가 바뀔 때.
+- **안**: CLImanger `post-release.cjs` 끝에서 이 스크립트를 돌려 다르면 경고, 또는 이 저장소에 CI 한 줄.
+
 ## changelog 노트 언어를 아무도 검사하지 않는다 (2026-10-03, feedback-cycle)
 
 - **근거**: 운영 `changelogs` 의 v1.12.1 행만 한국어로 들어갔다(제보 82cb4ecd). v1.12.0~v1.7.0 은 영어.

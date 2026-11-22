@@ -1,12 +1,13 @@
 import { SITE_URL } from "@/lib/site"
-import { RECENT_RELEASES } from "@/lib/recent-releases"
+import { getRecentReleases } from "@/lib/recent-releases"
 
 // 예전엔 public/llms.txt 정적 파일이었는데 링크가 https://solhun.com 으로 박혀 있었다.
-// 도메인 이전 시 같이 바뀌도록 SITE_URL 로 만들어 내보낸다(빌드 시 정적 생성).
-export const dynamic = "force-static"
+// 도메인 이전 시 같이 바뀌도록 SITE_URL 로 만들어 내보낸다.
+// 최근 릴리즈는 changelog DB 에서 읽으므로 홈과 같이 한 시간마다 다시 만든다.
+export const revalidate = 3600
 
-export function GET() {
-  const recent = RECENT_RELEASES.map(
+export async function GET() {
+  const recent = (await getRecentReleases()).map(
     (release) => `- ${release.version} — ${release.title}: ${release.summary}`,
   ).join("\n")
 

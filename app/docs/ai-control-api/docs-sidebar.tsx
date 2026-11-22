@@ -10,6 +10,8 @@ export type DocsNavGroup = { label: string; items: DocsNavItem[] }
 
 // 사이드바가 붙는 위치(화면 위에서 px). 절 제목의 scroll-mt-24(96px)와 맞춘다
 const STICKY_TOP_PX = 96
+// 사이드바 안에서 읽는 항목을 보이게 굴릴 때 위·아래 여유
+const ACTIVE_ITEM_MARGIN_PX = 24
 // 지금 읽는 절로 보는 기준선 — 화면 위에서 이만큼 내려온 선을 지난 마지막 절
 const ACTIVE_LINE_PX = 140
 
@@ -23,7 +25,7 @@ function sameMode(a: StickyMode, b: StickyMode) {
 
 function NavList({ groups, activeId, onPick }: { groups: DocsNavGroup[]; activeId: string; onPick?: () => void }) {
   return (
-    <ol className="flex flex-col gap-5">
+    <ol className="flex flex-col gap-4">
       {groups.map((group) => (
         <li key={group.label} className="flex flex-col gap-1.5">
           <span className="text-[rgba(73,66,61,0.55)] text-[11px] font-semibold uppercase tracking-wider font-sans">
@@ -38,7 +40,7 @@ function NavList({ groups, activeId, onPick }: { groups: DocsNavGroup[]; activeI
                     href={`#${item.id}`}
                     onClick={onPick}
                     aria-current={isActive ? "location" : undefined}
-                    className={`-ml-px block border-l pl-3 py-1 text-[13px] leading-5 font-sans transition-colors ${
+                    className={`-ml-px block border-l pl-3 py-0.5 text-[13px] leading-5 font-sans transition-colors ${
                       isActive
                         ? "border-[#37322F] text-[#37322F] font-medium"
                         : "border-transparent text-[#605A57] hover:text-[#37322F] hover:border-[rgba(55,50,47,0.35)]"
@@ -92,6 +94,18 @@ export function DocsSidebar({ groups }: { groups: DocsNavGroup[] }) {
   const navRef = useRef<HTMLDivElement>(null)
   const [sticky, setSticky] = useState<StickyMode>({ mode: "static" })
 
+  // 목록이 화면보다 길면 사이드바 안에서 스크롤된다 — 읽는 절이 사이드바 밖으로 나가면 그 항목이 보이게 사이드바만 굴린다.
+  // scrollIntoView 는 페이지 전체를 움직이므로 쓰지 않는다
+  useEffect(() => {
+    const nav = navRef.current
+    const active = nav?.querySelector<HTMLElement>('[aria-current="location"]')
+    if (!nav || !active) return
+    const itemTop = active.offsetTop
+    const itemBottom = itemTop + active.offsetHeight
+    if (itemTop < nav.scrollTop) nav.scrollTop = itemTop - ACTIVE_ITEM_MARGIN_PX
+    else if (itemBottom > nav.scrollTop + nav.clientHeight) nav.scrollTop = itemBottom - nav.clientHeight + ACTIVE_ITEM_MARGIN_PX
+  }, [activeId])
+
   // CSS sticky 를 쓰지 않는 이유: 공용 PageWrapper 가 overflow-hidden / overflow-x-hidden 이라
   // 그 안의 position: sticky 는 붙지 않는다. 공용 레이아웃을 건드리지 않으려고 이 칸 안에서 직접 붙인다.
   useEffect(() => {
@@ -133,7 +147,7 @@ export function DocsSidebar({ groups }: { groups: DocsNavGroup[] }) {
       <div
         ref={navRef}
         style={navStyle}
-        className="pt-8 pb-6 max-h-[calc(100vh-112px)] overflow-y-auto pr-2"
+        className="relative pt-8 pb-6 max-h-[calc(100vh-112px)] overflow-y-auto pr-2"
         data-sticky={sticky.mode}
       >
         <NavList groups={groups} activeId={activeId} />

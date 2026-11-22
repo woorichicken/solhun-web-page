@@ -103,7 +103,7 @@ const NAV_GROUPS: DocsNavGroup[] = [
       { id: "enable", label: "Turn it on" },
       { id: "mcp", label: "Connect Claude Code (MCP)" },
       { id: "rest", label: "Use it without MCP (REST)" },
-      { id: "skill", label: "Agent skill: climanager-session" },
+      { id: "skill", label: "Agent skill" },
     ],
   },
   {

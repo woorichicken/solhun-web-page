@@ -13,6 +13,8 @@ const DOWNLOAD_URLS = {
 // URL 의 `cli-manager-<버전>-` 문자열만 바꾸므로, 버전을 따로 적어 두면 그 갱신에서 빠진다.
 const DOWNLOAD_VERSION = /cli-manager-(\d+\.\d+\.\d+)-/.exec(DOWNLOAD_URLS.arm64)?.[1] ?? ""
 
+const GITHUB_URL = "https://github.com/woorichicken/CLI_manager"
+
 // 에이전트가 앱을 조종하는 API 가이드 — 헤더 맨 위(넓은 화면)와 Resources 메뉴(좁은 화면·모바일) 두 곳에서 연다(제보 3ee2d0ba)
 const API_DOCS_HREF = "/docs/ai-control-api"
 
@@ -61,10 +63,11 @@ export function SiteHeader() {
         <div className="w-full h-0 absolute left-0 top-6 sm:top-7 md:top-8 lg:top-[42px] border-t border-[rgba(55,50,47,0.12)] shadow-[0px_1px_0px_white]"></div>
 
         <div className="w-full max-w-[calc(100%-32px)] sm:max-w-[calc(100%-48px)] md:max-w-[calc(100%-64px)] lg:max-w-[780px] lg:w-[780px] h-10 sm:h-11 md:h-12 py-1.5 sm:py-2 px-3 sm:px-4 md:px-4 pr-2 sm:pr-3 bg-[#F7F5F3] backdrop-blur-sm shadow-[0px_0px_0px_2px_white] rounded-[50px] flex justify-between items-center relative z-30">
-          {/* 모바일 햄버거 버튼 - 왼쪽 */}
+          {/* 햄버거 버튼 - 왼쪽. 1024px 미만에서 보인다 — 640~1023px 에 메뉴 3개 + GitHub + Download 를 다 펼치면
+              알약보다 120~140px 넓어 Download 가 잘렸다(640px 에서 142px · 768px 에서 120px 초과, 2026-11-22 실측) */}
           <button
             onClick={() => setIsSidebarOpen(true)}
-            className="sm:hidden flex flex-col justify-center items-center w-8 h-8 rounded-full hover:bg-[rgba(55,50,47,0.05)] transition-all duration-200"
+            className="lg:hidden flex flex-col justify-center items-center w-8 h-8 rounded-full hover:bg-[rgba(55,50,47,0.05)] transition-all duration-200"
             aria-label="메뉴 열기"
           >
             <span className="block w-4 h-0.5 bg-[#2F3037]"></span>
@@ -72,7 +75,7 @@ export function SiteHeader() {
             <span className="block w-4 h-0.5 bg-[#2F3037]"></span>
           </button>
 
-          {/* 로고 - 모바일에서 가운데, 데스크탑에서 왼쪽 */}
+          {/* 로고 - 640px 미만에서 가운데, 그 위로는 왼쪽(1024px 미만은 햄버거 바로 옆) */}
           <div className="flex justify-center items-center sm:flex-1 sm:justify-start">
             <Link href="/" className="flex justify-start items-center gap-2 cursor-pointer">
               <div className="w-6 h-6 sm:w-7 sm:h-7 relative rounded-md overflow-hidden shadow-sm border border-[rgba(55,50,47,0.08)]">
@@ -84,7 +87,7 @@ export function SiteHeader() {
             </Link>
 
             {/* 데스크탑 네비게이션 - 드롭다운 메뉴들 */}
-            <div className="pl-3 sm:pl-4 md:pl-5 lg:pl-5 hidden sm:flex flex-row gap-1 md:gap-2">
+            <div className="pl-5 hidden lg:flex flex-row gap-2">
               {(Object.keys(NAV_MENUS) as MenuKey[]).map((menuKey) => (
                 <div
                   key={menuKey}
@@ -130,8 +133,8 @@ export function SiteHeader() {
                 </div>
               ))}
 
-              {/* API Docs — 드롭다운 없이 바로 가는 링크. 640~1023px 에서는 헤더 알약이 이미 꽉 차서(Download 가 잘림)
-                  1024px 이상에서만 보이고, 그 아래 폭에서는 Resources 메뉴의 같은 링크로 간다 */}
+              {/* API Docs — 드롭다운 없이 바로 가는 링크. 펼친 메뉴(1024px 이상)에만 있고,
+                  그 아래 폭에서는 햄버거 메뉴의 Resources › AI Control API 로 간다 */}
               <Link
                 href={API_DOCS_HREF}
                 className="hidden lg:flex items-center whitespace-nowrap px-3 py-2 rounded-full hover:bg-[rgba(55,50,47,0.05)] transition-all duration-200 text-[rgba(49,45,43,0.80)] text-xs md:text-[13px] font-medium leading-[14px] font-sans"
@@ -143,10 +146,10 @@ export function SiteHeader() {
 
           {/* GitHub Button */}
           <a
-            href="https://github.com/woorichicken/CLI_manager"
+            href={GITHUB_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden sm:flex justify-center items-center gap-1.5 px-3 py-2 rounded-full border border-[rgba(55,50,47,0.2)] text-[#37322F] hover:bg-[rgba(55,50,47,0.06)] transition-all duration-200 mr-2"
+            className="hidden lg:flex justify-center items-center gap-1.5 px-3 py-2 rounded-full border border-[rgba(55,50,47,0.2)] text-[#37322F] hover:bg-[rgba(55,50,47,0.06)] transition-all duration-200 mr-2"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor">
               <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
@@ -230,15 +233,15 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {/* 모바일 사이드바 오버레이 */}
+      {/* 사이드바 오버레이 (1024px 미만) */}
       <div
-        className={`sm:hidden fixed inset-0 bg-black/30 z-[100] transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+        className={`lg:hidden fixed inset-0 bg-black/30 z-[100] transition-opacity duration-300 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
         onClick={() => setIsSidebarOpen(false)}
       />
 
-      {/* 모바일 사이드바 - 왼쪽에서 슬라이드 */}
+      {/* 사이드바 - 왼쪽에서 슬라이드 (1024px 미만) */}
       <div
-        className={`sm:hidden fixed left-0 top-0 bottom-0 w-[280px] bg-[#F7F5F3] z-[101] shadow-2xl transition-transform duration-300 ease-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        className={`lg:hidden fixed left-0 top-0 bottom-0 w-[280px] bg-[#F7F5F3] z-[101] shadow-2xl transition-transform duration-300 ease-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         {/* 사이드바 헤더 */}
         <div className="flex items-center justify-between p-4 border-b border-[rgba(55,50,47,0.12)]">
@@ -303,6 +306,18 @@ export function SiteHeader() {
               </div>
             </div>
           ))}
+
+          {/* GitHub — 알약의 GitHub 버튼은 1024px 이상에서만 보여서, 그 아래 폭에서는 여기서 연다 */}
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsSidebarOpen(false)}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-xl text-[#2F3037] text-sm font-medium hover:bg-[rgba(55,50,47,0.05)] transition-all duration-200"
+          >
+            <span>GitHub</span>
+            <span aria-hidden="true" className="text-[rgba(49,45,43,0.60)]">↗</span>
+          </a>
         </div>
 
         {/* 사이드바 하단 - Download */}

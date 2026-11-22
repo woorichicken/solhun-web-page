@@ -331,8 +331,10 @@ export default function AiControlApiPage() {
                 ["3", "The screen is waiting on a question or menu", "Read the screen and answer with --keys"],
                 ["4", "Session not found, or the user took it back", "Stop using it; open a new one if needed"],
                 ["5", "API off or app not running", "Ask the user to enable it in Settings → Agents"],
-                ["7", "Wait timed out — still running", "Not a failure; wait again or report"],
+                ["6", "send: the start of the text is not visible on screen — it may have been cut", "Read with --tail; if cut, send again with --file"],
+                ["7", "Wait timed out — still running (also: close refused a busy session)", "Not a failure; wait again or report"],
                 ["2", "Usage error", "Fix the arguments"],
+                ["1", "Other API error (no_route = the app is too old for this command)", "Read the message; update CLI Manager"],
               ]}
             />
             <P>

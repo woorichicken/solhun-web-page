@@ -43,7 +43,9 @@ export function AgentSkillCard() {
           </h2>
           <p className="text-[#605A57] text-sm sm:text-base leading-6 font-sans">
             Install the skill and your coding agent can open visible sessions in CLI Manager, run another agent
-            there, wait for it and read the screen — while you watch and take over at any time.
+            there, wait for it and read the screen — while you watch and take over at any time. It can also ping you
+            in the app inbox, keep a header checklist, sort sessions into folders, fork a conversation and run agents
+            on a schedule.
           </p>
         </div>
 
@@ -63,7 +65,8 @@ export function AgentSkillCard() {
         </div>
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm font-sans text-[#605A57]">
-          <span>Needs CLI Manager v1.10+ with Settings › Agents › AI Control API on.</span>
+          {/* 기능별 최소 버전은 공개 스킬 SKILL.md 기능표(inbox 1.18 · 폴더 1.21 · 체크리스트 1.24 · fork 1.31 · Autocron 1.34) — fb-1122 oss-skill 보고 */}
+          <span>Needs CLI Manager v1.10+ (v1.34+ for inbox, checklists, session folders, fork and schedules) with Settings › Agents › AI Control API on.</span>
           {/* 가이드는 사이트 안에 있다 — GitHub README 만 가리키면 「API 가이드가 필요하다」는 제보가 나온다(127fd659) */}
           <Link
             href={API_GUIDE_PATH}

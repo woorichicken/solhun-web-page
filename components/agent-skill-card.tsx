@@ -65,7 +65,7 @@ export function AgentSkillCard() {
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-sans text-[#605A57]">
           {/* 기능별 최소 버전은 공개 스킬 SKILL.md 기능표(inbox 1.18 · 폴더 1.21 · 체크리스트 1.24 · fork 1.31 · Autocron 1.34) — fb-1122 oss-skill 보고 */}
-          <span>Needs v1.10+ with Settings › Agents › AI Control API on (v1.34+ for inbox, checklists, folders, fork and schedules).</span>
+          <span>Needs CLI Manager v1.10+ with Settings › Agents › AI Control API on (v1.34+ for inbox, checklists, folders, fork and schedules).</span>
           {/* 가이드는 사이트 안에 있다 — GitHub README 만 가리키면 「API 가이드가 필요하다」는 제보가 나온다(127fd659) */}
           <Link
             href={API_GUIDE_PATH}

@@ -32,20 +32,19 @@ export function AgentSkillCard() {
       aria-labelledby="agent-skill-heading"
       className="relative z-10 w-full max-w-3xl mx-auto px-4 mb-12 sm:mb-16"
     >
-      <div className="bg-white rounded-2xl border border-[rgba(55,50,47,0.12)] shadow-[0px_2px_4px_rgba(50,45,43,0.06)] p-5 sm:p-6 flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
-          <div className="flex items-center gap-2 text-xs font-medium font-sans text-[#605A57]">
-            <span className="shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full bg-[#F5F5F4] text-[#37322F]">Agent skill</span>
-            <span>Works with Claude Code, Codex and other agents</span>
+      {/* 영상 아래 「관련 스킬」 한 장 — 크게 보이면 본문처럼 읽혀서 머리 한 줄 + 한 문장으로 줄였다(dda0b8f6) */}
+      <div className="bg-white rounded-2xl border border-[rgba(55,50,47,0.12)] shadow-[0px_2px_4px_rgba(50,45,43,0.06)] p-4 sm:p-5 flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span className="shrink-0 whitespace-nowrap px-2 py-0.5 rounded-full bg-[#F5F5F4] text-[#37322F] text-xs font-medium font-sans">
+              Related skill
+            </span>
+            <h2 id="agent-skill-heading" className="text-[#37322F] text-base sm:text-lg font-semibold font-sans tracking-tight">
+              climanager-session
+            </h2>
           </div>
-          <h2 id="agent-skill-heading" className="text-[#37322F] text-xl sm:text-2xl font-semibold font-sans tracking-tight">
-            Try the demo yourself: climanager-session
-          </h2>
-          <p className="text-[#605A57] text-sm sm:text-base leading-6 font-sans">
-            Install the skill and your coding agent can open visible sessions in CLI Manager, run another agent
-            there, wait for it and read the screen — while you watch and take over at any time. It can also ping you
-            in the app inbox, keep a header checklist, sort sessions into folders, fork a conversation and run agents
-            on a schedule.
+          <p className="text-[#605A57] text-sm leading-6 font-sans">
+            Lets Claude Code, Codex and other agents open, drive and read CLI Manager sessions while you watch.
           </p>
         </div>
 
@@ -64,15 +63,15 @@ export function AgentSkillCard() {
           </button>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs sm:text-sm font-sans text-[#605A57]">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-sans text-[#605A57]">
           {/* 기능별 최소 버전은 공개 스킬 SKILL.md 기능표(inbox 1.18 · 폴더 1.21 · 체크리스트 1.24 · fork 1.31 · Autocron 1.34) — fb-1122 oss-skill 보고 */}
-          <span>Needs CLI Manager v1.10+ (v1.34+ for inbox, checklists, session folders, fork and schedules) with Settings › Agents › AI Control API on.</span>
+          <span>Needs v1.10+ with Settings › Agents › AI Control API on (v1.34+ for inbox, checklists, folders, fork and schedules).</span>
           {/* 가이드는 사이트 안에 있다 — GitHub README 만 가리키면 「API 가이드가 필요하다」는 제보가 나온다(127fd659) */}
           <Link
             href={API_GUIDE_PATH}
             className="text-[#37322F] font-medium underline hover:text-[#605A57] transition-colors"
           >
-            Read the AI Control API guide →
+            API guide →
           </Link>
           <a
             href={SKILL_REPO_URL}
@@ -80,7 +79,7 @@ export function AgentSkillCard() {
             rel="noopener noreferrer"
             className="text-[#37322F] font-medium underline hover:text-[#605A57] transition-colors"
           >
-            Skill on GitHub →
+            GitHub →
           </a>
         </div>
       </div>

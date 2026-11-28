@@ -1,14 +1,16 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import type React from "react"
 import { PageWrapper } from "../../../components/page-wrapper"
+import { CodeCopyButton, SectionCopyButton } from "./copy-buttons"
+import { DocsScreenshot } from "./docs-screenshot"
 import { DocsMobileToc, DocsSidebar, type DocsNavGroup } from "./docs-sidebar"
 import { ENDPOINT_GROUPS } from "./endpoints"
 
 // 이 페이지의 정본은 CLImanger 저장소 docs/architecture/control-api.md(엔드포인트·상태 계약)와
 // climanager-session 스킬(SKILL.md, 에이전트용 사용법)이다. 앱이 바뀌면 거기부터 보고 맞춘다.
 // 기준: CLI Manager v1.36.0 · control-api.md origin/main 735a5f8 (2026-11-22 확인)
+// 본문 사이 캡처(public/screenshots/docs)는 v1.38.0 데모 인스턴스 — scripts/app-screenshots/docs-shots.mjs (2026-11-28)
 // 엔드포인트 표(endpoints.ts)가 계약 문서와 같은지는 저장소 scripts/check-control-api-endpoints.mjs 로 센다.
 
 export const metadata: Metadata = {
@@ -28,10 +30,13 @@ const DEFAULT_PORT = 47821
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`${id}-heading`} className="flex flex-col gap-4 scroll-mt-24">
-      <h2 id={`${id}-heading`} className="text-[#37322F] text-2xl sm:text-3xl font-semibold font-sans tracking-tight">
-        {title}
-      </h2>
+    <section id={id} aria-labelledby={`${id}-heading`} data-copy-root="" className="flex flex-col gap-4 scroll-mt-24">
+      <div className="flex items-start justify-between gap-3">
+        <h2 id={`${id}-heading`} className="text-[#37322F] text-2xl sm:text-3xl font-semibold font-sans tracking-tight">
+          {title}
+        </h2>
+        <SectionCopyButton title={title} />
+      </div>
       {children}
     </section>
   )
@@ -47,9 +52,12 @@ function Code({ children }: { children: React.ReactNode }) {
 
 function CodeBlock({ children }: { children: string }) {
   return (
-    <pre className="w-full overflow-x-auto rounded-lg bg-[#1C1B1F] text-[#E7E5E4] text-[13px] leading-6 p-4 font-mono">
-      <code>{children}</code>
-    </pre>
+    <div className="relative w-full">
+      <pre className="w-full overflow-x-auto rounded-lg bg-[#1C1B1F] text-[#E7E5E4] text-[13px] leading-6 p-4 pt-12 font-mono">
+        <code>{children}</code>
+      </pre>
+      <CodeCopyButton text={children} />
+    </div>
   )
 }
 
@@ -79,17 +87,6 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
         </tbody>
       </table>
     </div>
-  )
-}
-
-function Screenshot({ src, alt, caption }: { src: string; alt: string; caption: string }) {
-  return (
-    <figure className="flex flex-col gap-2">
-      <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-[rgba(55,50,47,0.12)] bg-[#141418]">
-        <Image src={src} alt={alt} fill sizes="(min-width: 896px) 896px, 100vw" className="object-cover object-left-top" />
-      </div>
-      <figcaption className="text-[#605A57] text-xs font-sans">{caption}</figcaption>
-    </figure>
   )
 }
 
@@ -215,7 +212,7 @@ export default function AiControlApiPage() {
               an <strong>AI connected</strong> badge in the header. You can read along, type into it, or disconnect the AI
               and keep the session for yourself.
             </P>
-            <Screenshot
+            <DocsScreenshot
               src="/screenshots/ai-control-session.webp"
               alt="A session opened through the AI Control API, highlighted in green in the sidebar"
               caption="A session opened through the API. It is a normal terminal — the input went through the same path as your typing."
@@ -241,7 +238,7 @@ export default function AiControlApiPage() {
                 copy-paste. The file is deleted when the app quits.
               </li>
             </ol>
-            <Screenshot
+            <DocsScreenshot
               src="/screenshots/settings-ai-control-api.webp"
               alt="Settings, Agents tab, AI Control API section with the enable switch, port, token and MCP command"
               caption="Settings → Agents. Changing the port means re-running the connect command. (This demo instance uses a non-default port.)"
@@ -469,6 +466,11 @@ export default function AiControlApiPage() {
               <Code>create_session_folder</Code>, <Code>rename_session_folder</Code>, <Code>delete_session_folder</Code>,{" "}
               <Code>move_session_to_folder</Code>).
             </P>
+            <DocsScreenshot
+              src="/screenshots/docs/session-folders.webp"
+              alt="All sessions view with sessions grouped into folders"
+              caption="Choose List in the view menu at the top of the sidebar (it reads Folders ▾ by default) to see every session at once, grouped into session folders. The crown marks a master session; green ones were opened by an agent."
+            />
             <ul className="list-disc pl-6 flex flex-col gap-2 text-[#605A57] text-base leading-7 font-sans">
               <li>
                 A folder is named by id first, then by name (case ignored). A name two folders share is{" "}
@@ -487,6 +489,11 @@ export default function AiControlApiPage() {
               The same list as the session menu in the app: the Claude Code and Codex conversations that belong to a
               session&apos;s folder, and a way to connect one of them to the session.
             </P>
+            <DocsScreenshot
+              src="/screenshots/docs/chat-view.webp"
+              alt="Chat view of a Claude Code conversation next to the session tabs"
+              caption="A Claude Code conversation in Chat view (Terminal | Chat in the header). The session tabs above stay open while you switch."
+            />
             <ul className="list-disc pl-6 flex flex-col gap-2 text-[#605A57] text-base leading-7 font-sans">
               <li>
                 <Code>GET /v1/sessions/:id/conversations</Code> (MCP <Code>list_agent_conversations</Code>) — up to 30,
@@ -566,6 +573,11 @@ export default function AiControlApiPage() {
               first time it types into one it did not open (input, connecting a conversation, a fork). Reading, waiting and
               focusing relate nothing.
             </P>
+            <DocsScreenshot
+              src="/screenshots/docs/related.webp"
+              alt="Related dialog listing the sessions a master session opened"
+              caption="The Related dialog of a master session: the two sessions it opened through the API, listed below it."
+            />
             <ul className="list-disc pl-6 flex flex-col gap-2 text-[#605A57] text-base leading-7 font-sans">
               <li>
                 Relations survive restarts; closing either session deletes the pair. You can add pairs by hand and remove any
@@ -588,6 +600,11 @@ export default function AiControlApiPage() {
               sends a request. It waits in the app&apos;s inbox (the bell in the sidebar header, with the unread count also on
               the Dock icon) until you check it off.
             </P>
+            <DocsScreenshot
+              src="/screenshots/docs/inbox.webp"
+              alt="Inbox popover under the sidebar bell with requests from sessions"
+              caption="Three sessions asking for a hand — a sign-in, a question and a review. The orange dot marks each sender in the sidebar."
+            />
             <CodeBlock>{INBOX_EXAMPLE}</CodeBlock>
             <ul className="list-disc pl-6 flex flex-col gap-2 text-[#605A57] text-base leading-7 font-sans">
               <li>
@@ -613,6 +630,11 @@ export default function AiControlApiPage() {
               lead agent keeps its plan there instead of in a reply that scrolls away, and whoever finishes an item checks
               it. A checklist belongs to no session.
             </P>
+            <DocsScreenshot
+              src="/screenshots/docs/checklists.webp"
+              alt="Checklist panel opened from the header chip"
+              caption="The header chip shows 2/5 done; clicking it opens the checklist for the current project."
+            />
             <CodeBlock>{CHECKLIST_EXAMPLE}</CodeBlock>
             <ul className="list-disc pl-6 flex flex-col gap-2 text-[#605A57] text-base leading-7 font-sans">
               <li>A checklist is named by id or title; an item by its number from 1 or its id.</li>
@@ -637,6 +659,11 @@ export default function AiControlApiPage() {
               Jobs CLI Manager starts on a schedule, shown in the Loop window&apos;s <strong>Autocron</strong> tab. REST
               only for now — there are no MCP tools for it yet.
             </P>
+            <DocsScreenshot
+              src="/screenshots/docs/autocron.webp"
+              alt="Loop window, Autocron tab with scheduled jobs"
+              caption="Loop Dashboard → Autocron: each job with its next run, what happens if a run is missed and who made it."
+            />
             <CodeBlock>{CRON_EXAMPLE}</CodeBlock>
             <ul className="list-disc pl-6 flex flex-col gap-2 text-[#605A57] text-base leading-7 font-sans">
               <li>
@@ -705,8 +732,13 @@ export default function AiControlApiPage() {
               stateless, protocol versions 2024-11-05 to 2025-11-25).
             </P>
             {ENDPOINT_GROUPS.map((group) => (
-              <div key={group.id} id={group.id} className="flex flex-col gap-3 scroll-mt-24">
-                <h3 className="text-[#37322F] text-lg font-semibold font-sans">{group.title}</h3>
+              <div key={group.id} id={group.id} data-copy-root="" className="flex flex-col gap-3 scroll-mt-24">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 id={`${group.id}-heading`} className="text-[#37322F] text-lg font-semibold font-sans">
+                    {group.title}
+                  </h3>
+                  <SectionCopyButton title={group.title} />
+                </div>
                 <Table
                   head={["Method", "Path", "Body / query / result"]}
                   rows={group.endpoints.map((endpoint) => [

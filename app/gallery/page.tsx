@@ -6,7 +6,7 @@ import { ProductList, Product } from "../../components/product-list"
 import { ImageGallery } from "../../components/image-gallery"
 import { Bot, FlaskConical, GitBranch, GitCompare, Github, Network, StickyNote, Terminal } from "lucide-react"
 
-// 스틸 이미지는 데모 인스턴스(가짜 프로젝트)에서 찍은 v1.36.0 화면(public/screenshots)으로 바꿨다.
+// 스틸 이미지는 데모 인스턴스(가짜 프로젝트)에서 찍은 v1.38.0 화면(public/screenshots)으로 바꿨다.
 // 옛 전체 화면 캡처(worktree-*.png·main-*.png 등)는 개인 경로·실제 프로젝트명이 보여 뺐다.
 // 옛 녹화 영상(.mp4)은 개인 경로·실제 프로젝트명이 찍혀 있어 뺐다(2026-09-30). 데모 인스턴스로 다시 찍으면 첫 번째 자리에 넣는다.
 const products = [
@@ -62,10 +62,10 @@ const products = [
     id: "3",
     title: "Port Manager",
     description: "See which dev servers are listening in the port bar, filter the range you care about, and kill a stuck process in one click.",
-    image: "/screenshots/app-dashboard.webp",
+    image: "/screenshots/dev-server.webp",
     logo: <Network className="h-5 w-5 text-blue-500" />,
     galleryImages: [
-      "/screenshots/app-dashboard.webp",
+      "/screenshots/dev-server.webp",
       "/port-1.png",
       "/port-2.png",
     ]

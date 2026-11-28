@@ -18,7 +18,7 @@ import { HERO_DEMO_VIDEO } from "../lib/demo-video"
 import { ImageGallery } from "../components/image-gallery"
 import { Maximize2 } from "lucide-react"
 
-// 홈 기능 섹션. 스크린샷은 데모 인스턴스(가짜 프로젝트·별도 프로필)에서 v1.36.0 으로 찍었다 — 개인 경로·계정이 없다.
+// 홈 기능 섹션. 스크린샷은 데모 인스턴스(가짜 프로젝트·별도 프로필)에서 v1.38.0 으로 찍었다 — 개인 경로·계정이 없다.
 // 새로 찍을 때도 같은 방식으로: scripts/app-screenshots/shots.mjs (사용자 앱에서 찍지 않는다).
 interface HomeFeature {
   title: string
@@ -36,7 +36,7 @@ const FEATURES: HomeFeature[] = [
     description:
       "Claude Code, Codex CLI, Gemini CLI and plain shells live side by side in one sidebar. Group projects into folders, name each session by its role, and switch with a shortcut — every session keeps running while you look elsewhere.",
     image: "/screenshots/app-dashboard.webp",
-    alt: "CLI Manager sidebar with folders, workspaces and sessions, and a running dev server",
+    alt: "CLI Manager sidebar with folders and sessions, open session tabs, and a Claude Code conversation in Chat view",
     link: { href: "/docs", label: "Learn more →" },
   },
   {

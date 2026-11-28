@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import type React from "react"
 import { PageWrapper } from "../../../components/page-wrapper"
+import { CodeCopyButton, SectionCopyButton } from "./copy-buttons"
+import { DocsScreenshot } from "./docs-screenshot"
 import { DocsMobileToc, DocsSidebar, type DocsNavGroup } from "./docs-sidebar"
 import { ENDPOINT_GROUPS } from "./endpoints"
 
@@ -28,10 +29,13 @@ const DEFAULT_PORT = 47821
 
 function Section({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`${id}-heading`} className="flex flex-col gap-4 scroll-mt-24">
-      <h2 id={`${id}-heading`} className="text-[#37322F] text-2xl sm:text-3xl font-semibold font-sans tracking-tight">
-        {title}
-      </h2>
+    <section id={id} aria-labelledby={`${id}-heading`} data-copy-root="" className="flex flex-col gap-4 scroll-mt-24">
+      <div className="flex items-start justify-between gap-3">
+        <h2 id={`${id}-heading`} className="text-[#37322F] text-2xl sm:text-3xl font-semibold font-sans tracking-tight">
+          {title}
+        </h2>
+        <SectionCopyButton title={title} />
+      </div>
       {children}
     </section>
   )
@@ -47,9 +51,12 @@ function Code({ children }: { children: React.ReactNode }) {
 
 function CodeBlock({ children }: { children: string }) {
   return (
-    <pre className="w-full overflow-x-auto rounded-lg bg-[#1C1B1F] text-[#E7E5E4] text-[13px] leading-6 p-4 font-mono">
-      <code>{children}</code>
-    </pre>
+    <div className="relative w-full">
+      <pre className="w-full overflow-x-auto rounded-lg bg-[#1C1B1F] text-[#E7E5E4] text-[13px] leading-6 p-4 pt-12 font-mono">
+        <code>{children}</code>
+      </pre>
+      <CodeCopyButton text={children} />
+    </div>
   )
 }
 
@@ -79,17 +86,6 @@ function Table({ head, rows }: { head: string[]; rows: React.ReactNode[][] }) {
         </tbody>
       </table>
     </div>
-  )
-}
-
-function Screenshot({ src, alt, caption }: { src: string; alt: string; caption: string }) {
-  return (
-    <figure className="flex flex-col gap-2">
-      <div className="relative w-full aspect-[16/10] rounded-xl overflow-hidden border border-[rgba(55,50,47,0.12)] bg-[#141418]">
-        <Image src={src} alt={alt} fill sizes="(min-width: 896px) 896px, 100vw" className="object-cover object-left-top" />
-      </div>
-      <figcaption className="text-[#605A57] text-xs font-sans">{caption}</figcaption>
-    </figure>
   )
 }
 
@@ -215,7 +211,7 @@ export default function AiControlApiPage() {
               an <strong>AI connected</strong> badge in the header. You can read along, type into it, or disconnect the AI
               and keep the session for yourself.
             </P>
-            <Screenshot
+            <DocsScreenshot
               src="/screenshots/ai-control-session.webp"
               alt="A session opened through the AI Control API, highlighted in green in the sidebar"
               caption="A session opened through the API. It is a normal terminal — the input went through the same path as your typing."
@@ -241,7 +237,7 @@ export default function AiControlApiPage() {
                 copy-paste. The file is deleted when the app quits.
               </li>
             </ol>
-            <Screenshot
+            <DocsScreenshot
               src="/screenshots/settings-ai-control-api.webp"
               alt="Settings, Agents tab, AI Control API section with the enable switch, port, token and MCP command"
               caption="Settings → Agents. Changing the port means re-running the connect command. (This demo instance uses a non-default port.)"
@@ -705,8 +701,13 @@ export default function AiControlApiPage() {
               stateless, protocol versions 2024-11-05 to 2025-11-25).
             </P>
             {ENDPOINT_GROUPS.map((group) => (
-              <div key={group.id} id={group.id} className="flex flex-col gap-3 scroll-mt-24">
-                <h3 className="text-[#37322F] text-lg font-semibold font-sans">{group.title}</h3>
+              <div key={group.id} id={group.id} data-copy-root="" className="flex flex-col gap-3 scroll-mt-24">
+                <div className="flex items-start justify-between gap-3">
+                  <h3 id={`${group.id}-heading`} className="text-[#37322F] text-lg font-semibold font-sans">
+                    {group.title}
+                  </h3>
+                  <SectionCopyButton title={group.title} />
+                </div>
                 <Table
                   head={["Method", "Path", "Body / query / result"]}
                   rows={group.endpoints.map((endpoint) => [
